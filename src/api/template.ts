@@ -1,0 +1,20 @@
+import { GetRequestModel } from '@dc-basic-component/request'
+import type { QueryType } from '@dc-basic-component/config'
+import type { PageModel } from '~/base/page-model'
+import type { TemplateVo } from '~/entity/project/template-vo'
+
+export default {
+
+  /**
+   * 获取所有的信息
+   * @param query 查询条件
+   */
+  all: (query: QueryType) => new GetRequestModel<Array<TemplateVo>>('/api/opm/template/all', query).request(),
+
+  /**
+   * 获取所有的信息
+   * @param query 查询条件
+   */
+  page: (query: QueryType) => new GetRequestModel<PageModel<TemplateVo>>('/api/opm/template/page', query).request(),
+
+}
