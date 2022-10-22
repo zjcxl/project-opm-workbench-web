@@ -1,0 +1,25 @@
+.editor-container {
+
+  display: grid;
+  grid-template-columns: 256px 1fr;
+  width: 100%;
+  padding: 10px;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  //border: 1px solid #00000022;
+  box-shadow: 4px -4px 10px 7px #00000011;
+
+  & > .left {
+    height: 100%;
+    border-right: 1px solid #00000055;
+    overflow: auto;
+    user-select: none;
+  }
+
+  & > .right {
+    height: 100%;
+    overflow: hidden;
+  }
+
+}

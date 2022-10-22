@@ -2,6 +2,7 @@ import { GetRequestModel } from '@dc-basic-component/request'
 import type { QueryType } from '@dc-basic-component/config'
 import type { PageModel } from '~/base/page-model'
 import type { TemplateVo } from '~/entity/project/template-vo'
+import type { TemplateMapVo } from '~/entity/project/template-map-vo'
 
 export default {
 
@@ -16,5 +17,11 @@ export default {
    * @param query 查询条件
    */
   page: (query: QueryType) => new GetRequestModel<PageModel<TemplateVo>>('/api/opm/template/page', query).request(),
+
+  /**
+   * map
+   * @param query 查询条件
+   */
+  map: (query: QueryType) => new GetRequestModel<Array<TemplateMapVo>>('/api/opm/template/map', query).request(),
 
 }

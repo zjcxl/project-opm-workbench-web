@@ -1,30 +1,52 @@
 <script setup lang="ts">
-import { NSelect } from 'naive-ui'
+import { NButton, NCollapse, NCollapseItem, NSelect } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
-import type { TemplateVo } from '~/entity/project/template-vo'
+import MonacoEditor from '../../../components/MonacoEditor.vue'
+import FileManage from '../../../components/file-manage/FileManage.vue'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
+import templateDetailRequest from '~/api/template-detail'
+import type { TemplateDetailVo } from '~/entity/project/template-detail-vo'
 
 const props = defineProps<{ projectId: string }>()
 
-const options = ref<SelectMixedOption[]>([])
+const developOptions = ref<SelectMixedOption[]>([])
+const templateOptions = ref<SelectMixedOption[]>([])
 const selectDevelopId = ref<string>()
+const selectTemplateId = ref<string>()
 
-const templateArray = ref<Array<TemplateVo>>([])
+const detailArray = ref<TemplateDetailVo[]>([])
+
+/**
+ * 修改模板id的方法
+ * @param value
+ */
+const handleChangeTemplate = (value: string) => {
+  templateDetailRequest.all({ templateId: value }).then((data) => {
+    detailArray.value = data.data
+  })
+}
 
 /**
  * 修改变开发数据
  * @param value 选中的值
  */
 const handleChangeDevelop = (value: string) => {
-  templateRequest.page({ rows: 10, developId: value }).then((data) => {
-    templateArray.value = data.data.list
+  templateRequest.map({ developId: value }).then((data) => {
+    templateOptions.value = data.data.map(item => ({
+      value: item.id,
+      label: item.name,
+    }))
+    // 选择第一个模板信息
+    // 设置为第一个信息
+    selectTemplateId.value = data.data[0].id
+    handleChangeTemplate(data.data[0].id)
   })
 }
 
 onMounted(() => {
   projectDevelopRequest.map({ rows: 10, projectId: props.projectId }).then((data) => {
-    options.value = data.data.map(item => ({
+    developOptions.value = data.data.map(item => ({
       value: item.id,
       label: item.name,
     }))
@@ -39,13 +61,41 @@ const router = useRouter()
 const go = (developId: string) => {
   router.push(`/project/develop/template/${developId}`)
 }
+const map = ref<Record<string, any>>({})
+const array = ref<any[]>([])
+
+const getValue = (content: string) => {
+  // eslint-disable-next-line no-console
+  console.log(content)
+  // eslint-disable-next-line no-console
+  console.log(array.value[0])
+  // eslint-disable-next-line no-console
+  console.log(array.value[0].value)
+  // eslint-disable-next-line no-console
+  console.log(array.value[0].getValue())
+}
+
+const setRefItem = (el: any) => {
+  array.value.push(el)
+  // map.value[id] = el
+}
 </script>
 
 <template>
-  <NSelect v-model:value="selectDevelopId" :options="options" @update:value="handleChangeDevelop" />
-  <div>
-    <div v-for="item in templateArray" :key="item.id">
-      {{ item }}
-    </div>
-  </div>
+  <!--  <NSelect v-model:value="selectDevelopId" :options="developOptions" @update:value="handleChangeDevelop" /> -->
+  <!--  <NSelect v-model:value="selectTemplateId" :options="templateOptions" /> -->
+  <!--  <br> -->
+  <FileManage :get-content-method="templateDetailRequest.content" style="height: 600px" />
+<!--  <br> -->
+<!--  <div> -->
+<!--    <NCollapse> -->
+<!--      <NCollapseItem v-for="item in detailArray" :key="item.key" :title="item.fileName" :name="item.key"> -->
+<!--        <NButton @click="getValue(item.id)"> -->
+<!--          获取 -->
+<!--        </NButton> -->
+<!--        <MonacoEditor :ref="setRefItem" :content="item.content" /> -->
+<!--        &lt;!&ndash;        <pre>{{ item.content }}</pre> &ndash;&gt; -->
+<!--      </NCollapseItem> -->
+<!--    </NCollapse> -->
+<!--  </div> -->
 </template>

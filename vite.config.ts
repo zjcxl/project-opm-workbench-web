@@ -58,7 +58,13 @@ export default defineConfig({
     // see unocss.config.ts for config
     Unocss(),
   ],
-
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      },
+    },
+  },
   // https://github.com/vitest-dev/vitest
   test: {
     environment: 'jsdom',
