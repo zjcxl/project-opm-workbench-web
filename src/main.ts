@@ -8,10 +8,13 @@ import App from './App.vue'
 import './styles/reset.css'
 import './styles/main.css'
 import 'uno.css'
+import { messageConfig } from '~/conifg/message'
 
 // 设置请求信息
 defineProjectConfig({
   baseUrl: '/api',
+  // 消息工具配置
+  message: messageConfig,
 })
 
 const app = createApp(App)

@@ -1,6 +1,6 @@
-import type { BaseVo } from '~/base/base-vo'
+import type { BaseDto } from '~/base/base-dto'
 
-export interface TemplateDetailVo extends BaseVo {
+export interface TemplateDetailDto extends BaseDto {
   // 模板id
   templateId: string
   // 模板内容
@@ -21,8 +21,6 @@ export interface TemplateDetailVo extends BaseVo {
   prefix: string
   // 后缀（待加上的表名后缀）
   suffix: string
-  // 是否是最新的版本 1=是 0=不是
-  isNew: 0 | 1
   // 顺序，默认数字越小约在前面
   sortOrder: number
 }

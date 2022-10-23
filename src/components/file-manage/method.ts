@@ -11,8 +11,8 @@ const updatedSet = ref<Set<string>>(new Set<string>())
  */
 export const renderPrefix = ({ option }: { option: TreeOption }) => {
   if (option.children)
-    return h('span', { class: 'i-carbon-folder c-red' })
-  return h('span', { class: 'i-carbon-document' })
+    return h('div', { class: 'i-carbon-folder c-red' })
+  return h('div', { class: 'i-carbon-document' })
 }
 
 /**
@@ -20,8 +20,16 @@ export const renderPrefix = ({ option }: { option: TreeOption }) => {
  * @param option 选项
  */
 export const renderLabel = ({ option }: { option: TreeOption }) => {
-  if (option.children)
-    return h('span', { class: 'c-red' }, option.label)
+  if (option.children) {
+    return h('span', {
+      class: 'c-red',
+      onContextmenu: (e: PointerEvent) => {
+        e.preventDefault()
+        // eslint-disable-next-line no-console
+        console.log(e)
+      },
+    }, option.label)
+  }
   return h('span', { style: updatedSet.value.has(option.key as any as string) ? 'color: blue;font-weight: bold;' : '' }, option.label)
 }
 
@@ -35,6 +43,10 @@ export const sortTreeOption = (array: TreeOption[]): TreeOption[] => {
       return -1
     if (!b.label)
       return 1
+    // 如果不是同一个属性
+    if (!a.children !== !b.children)
+      return !a.children ? 1 : -1
+    // ascii比较
     return a.label.localeCompare(b.label)
   })
   // 循环下一层
@@ -81,6 +93,20 @@ export class FileManage {
     this._getEditorValue = getEditorValue
     this._setEditorValue = setEditorValue
     this._getContentMethod = getContentMethod
+  }
+
+  /**
+   * 获取当前打开的文件内容
+   */
+  getCurrentContent(): string {
+    return this._getEditorValue()
+  }
+
+  /**
+   * 获取当前打开的文件id
+   */
+  getCurrentFileId(): string {
+    return this._lastFileId
   }
 
   /**

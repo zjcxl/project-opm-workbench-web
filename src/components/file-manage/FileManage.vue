@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { h, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
-import { NButton, NEmpty, NIcon, NTree } from 'naive-ui'
+import { NIcon, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
-import data from '../file-manage.json'
-import MonacoEditor from '../MonacoEditor.vue'
+import { useMessage } from '@dc-basic-component/util'
+import { getMessageConfig } from '@dc-basic-component/config'
+import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
+
+const props = defineProps<PropsState>()
 
 interface PropsState {
   /**
@@ -14,9 +17,21 @@ interface PropsState {
    * @param fileId 文件id
    */
   getContentMethod: (fileId: string) => Promise<ResultModel<string>>
+  /**
+   * 保存文件的方法
+   * @param fileId  文件id
+   * @param content 文件内容
+   */
+  saveContentMethod: (fileId: string, content: string) => void
+  /**
+   * 文件资源列表
+   */
+  data: TreeOption[]
 }
 
-const props = defineProps<PropsState>()
+// 文件栏的宽度
+const fileContainerWidth = ref<number>(500)
+const fileContainerWidthComputed = computed(() => `${fileContainerWidth.value}px`)
 
 // 默认选中的值（文件列表的第一项）
 const defaultSelectedKeys = ref<string[]>([])
@@ -45,6 +60,8 @@ const handleClickFile = (fileId: string) => {
  * @param options 选中的节点s
  */
 const handleClick = (keys: string[], options: TreeOption[]) => {
+  // eslint-disable-next-line no-console
+  console.log(options)
   // 获取第一层元素信息
   const option = options[0]
   // 如果存在子级（说明是文件夹，处理点击文件事件）
@@ -53,9 +70,19 @@ const handleClick = (keys: string[], options: TreeOption[]) => {
   handleClickFile(keys[0])
 }
 
-onMounted(() => {
+/**
+ * 保存文件的事件
+ */
+const handleClickSave = () => {
+  // 获取文件的内容
+  const content = (fileManage.value!).getCurrentContent()
+  const fileId = (fileManage.value!).getCurrentFileId()
+  props.saveContentMethod(fileId, content)
+}
+
+const init = (array: TreeOption[]) => {
   // 数据排序
-  dataList.value = sortTreeOption(data)
+  dataList.value = sortTreeOption(array)
   // 初始化文件管理对象
   fileManage.value = new FileManage(
     monacoEditorRef.value.getValue,
@@ -67,31 +94,59 @@ onMounted(() => {
   const key = option.key as any as string
   defaultSelectedKeys.value.push(key)
   handleClickFile((key))
+}
+
+watch(() => props.data, (data) => {
+  init(data)
+})
+
+onMounted(() => {
+  init(props.data)
 })
 </script>
 
 <template>
   <div class="editor-container">
-    <div class="left">
-      <NTree
-        block-line
-        :data="dataList"
-        :default-selected-keys="defaultSelectedKeys"
-        :render-switcher-icon="renderSwitcherIcon"
-        selectable
-        expand-on-click
-        default-expand-all
-        :render-prefix="renderPrefix"
-        :render-label="renderLabel"
-        @update:selected-keys="handleClick"
-      />
+    <div class="operation-panel">
+      <div class="icon-btn" i-carbon-save @click="handleClickSave" />
+      <!--      <div icon-btn i-carbon-document-add /> -->
+      <div class="icon-btn" i-carbon-folder-add />
     </div>
-    <div class="right">
-      <MonacoEditor ref="monacoEditorRef" />
+    <div class="show-panel">
+      <div class="left">
+        <NTree
+          style="width: 110%;"
+          block-line
+          :data="dataList"
+          :default-selected-keys="defaultSelectedKeys"
+          :render-switcher-icon="renderSwitcherIcon"
+          selectable
+          :expand-on-click="false"
+          default-expand-all
+          :render-prefix="renderPrefix"
+          :render-label="renderLabel"
+          draggable
+          @update:selected-keys="handleClick"
+        />
+      </div>
+      <div id="resize" class="middle" />
+      <div class="right">
+        <MonacoEditor ref="monacoEditorRef" />
+      </div>
+    </div>
+    <!--  防止unocss不加载 -->
+    <div hidden absolute>
+      <span i-carbon-document />
+      <span c-red c-blue font-bold i-carbon-folder />
     </div>
   </div>
 </template>
 
 <style scoped lang="less">
 @import "file-manage.less";
+
+.editor-container > .show-panel {
+  grid-template-columns: v-bind(fileContainerWidthComputed) 10px 1fr;
+}
 </style>
+
