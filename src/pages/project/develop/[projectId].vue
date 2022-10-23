@@ -3,184 +3,171 @@ import type { TreeOption } from 'naive-ui'
 import { NButton, NDrawer, NDrawerContent, NSelect, NSpace } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
+import { ref } from 'vue'
 import FileManage from '../../../components/file-manage/FileManage.vue'
 import MonacoEditor from '../../../components/editor/MonacoEditor.vue'
 import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
 import templateDetailRequest from '~/api/template-detail'
-import type { TemplateDetailVo } from '~/entity/project/template-detail-vo'
+import { getTemplateDetailById, handleTemplateDetailList } from '~/util/once/template-detail-util'
 
 const props = defineProps<{ projectId: string }>()
 
 const developOptions = ref<SelectMixedOption[]>([])
 const templateOptions = ref<SelectMixedOption[]>([])
+// 选中的开发id
 const selectDevelopId = ref<string>()
+// 选中的模板id
 const selectTemplateId = ref<string>()
+// 建表sql输入抽屉开关
 const drawerVisible = ref<boolean>(false)
-
+// sql编辑面板
 const monacoEditorSqlPanel = ref<InstanceType<typeof MonacoEditor>>()
+// 文件树列表
+const fileManageTreeList = ref<Array<TreeOption>>([])
+// 是否文件管理内容
+const fileManageVisible = ref<boolean>(false)
 
-const detailArray = ref<TemplateDetailVo[]>([])
+// 是否可以使用建表sql按钮
+const canUseSqlButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
 
-// 解析数据
-const resultArray = ref<TreeOption[]>([])
-const templateDetailMap: Record<string, TemplateDetailVo> = {}
-
-const handle = (array: TemplateDetailVo[]) => {
-  // 结果数组
-  const result: TreeOption[] = []
-  // 结果对象
-  const resultMap: Record<string, TreeOption> = {}
-  array.forEach((item) => {
-    // 保存西悉尼
-    templateDetailMap[item.id] = item
-    const packageNameArray = item.packageName.split('.')
-    packageNameArray.reduce((prev, current) => {
-      const key = prev ? `${prev}.${current}` : current
-      // 上一个节点
-      const prevNode = resultMap[prev]
-      if (!resultMap[key]) {
-        const option: TreeOption = {
-          key,
-          label: current,
-          children: [],
-        }
-        resultMap[key] = option
-        if (!prevNode)
-          result.push(option)
-        else
-          prevNode.children?.push(option)
-      }
-      return key
-    }, '')
-    // 获取最后一个，放入文件信息
-    resultMap[item.packageName].children?.push({
-      key: item.id,
-      label: item.fileName,
-    })
-  })
-  resultArray.value = result
-}
-
-const visible = ref<boolean>(false)
+/**
+ * 默认的sql文件内容
+ */
+const defaultSql = `create table table_name (
+id varchar(32) null comment '主键id'
+) comment '表格备注'
+ `
 
 /**
  * 修改模板id的方法
- * @param value
+ * @param templateId 模板id
  */
-const handleChangeTemplate = (value: string) => {
-  templateDetailRequest.all({ templateId: value, isNew: 1 }).then((data) => {
-    visible.value = false
-    detailArray.value = data.data
-    handle(data.data)
-    visible.value = true
+const handleChangeTemplate = (templateId: string) => {
+  selectTemplateId.value = templateId
+  // 设置为不可见
+  fileManageVisible.value = false
+  // 获取模板下所有的详情信息（最新的数据）
+  templateDetailRequest.all({ templateId, isNew: 1 }).then(({ data }) => {
+    fileManageTreeList.value = handleTemplateDetailList(data)
+    fileManageVisible.value = true
   })
 }
 
 /**
  * 修改变开发数据
- * @param value 选中的值
+ * @param developId 开发id
  */
-const handleChangeDevelop = (value: string) => {
-  templateRequest.map({ developId: value }).then((data) => {
-    templateOptions.value = data.data.map(item => ({
+const handleChangeDevelop = (developId: string) => {
+  selectDevelopId.value = developId
+  // 查询模板map列表
+  templateRequest.map({ developId }).then(({ data }) => {
+    templateOptions.value = data.map(item => ({
       value: item.id,
       label: item.name,
     }))
-    // 选择第一个模板信息
-    // 设置为第一个信息
-    selectTemplateId.value = data.data[0].id
-    handleChangeTemplate(data.data[0].id)
-  })
-}
-
-const fileSave = (id: string, content: string) => {
-  const detail = templateDetailMap[id]
-  if (!detail) {
-    useMessage().error('没有找到已有的文件')
-    return
-  }
-  detail.content = content
-  templateDetailRequest.update(id, { ...detail }).then((data) => {
-    // 保存成功
-    useMessage().success('保存成功')
-    // eslint-disable-next-line no-console
-    console.log(1)
-  })
-}
-
-const exportData = () => {
-  projectRequest.generate(props.projectId, {
-    templateId: selectTemplateId.value,
-  }).then((data) => {
-    const file = data.data
-    downloadFile(file.position + file.path, file.name)
-    useMessage().success('导出成功')
+    // 选中第一个
+    data.length > 0 && handleChangeTemplate(data[0].id)
   })
 }
 
 /**
- * 根据sql导出
+ * 处理文件保存
+ * @param id 文件id
+ * @param content 文件内容
  */
-const exportDataBySql = () => {
-  if (!monacoEditorSqlPanel || !monacoEditorSqlPanel.value) {
-    useMessage().error('没有找到sql编辑器')
+const handleFileSave = (id: string, content: string) => {
+  const detail = getTemplateDetailById(id)
+  if (!detail) {
+    useMessage().error('没有找到已有的文件')
     return
   }
-  const content = monacoEditorSqlPanel.value.getValue()
-  projectRequest.generate(props.projectId, {
-    templateId: selectTemplateId.value,
-    sql: content,
-  }).then((data) => {
-    const file = data.data
-    downloadFile(file.position + file.path, file.name)
-    useMessage().success('导出成功')
+  // 修改接口
+  templateDetailRequest.update(id, { ...detail, content }).then((data) => {
+    // 保存成功
+    useMessage().success('保存成功')
   })
 }
 
+/**
+ * 生成代码（调用后端的方法）
+ */
+const generate = (projectId: string, params?: Partial<{
+  sql: string
+  templateId: string
+  tableNameList: Array<string>
+}>) => {
+  projectRequest.generate(projectId, params).then(({ data: file }) => {
+    useMessage().success('文件包打包完成，即将下载！')
+    downloadFile(file.position + file.path, file.name)
+  })
+}
+
+/**
+ * 点击生成代码事件
+ */
+const handelClickGenerate = () => {
+  generate(props.projectId, { templateId: selectTemplateId.value })
+}
+
+/**
+ * 点击建表sql生成代码事件
+ */
+const handelClickGenerateBySql = () => {
+  const sql = monacoEditorSqlPanel?.value?.getValue()
+  if (!sql) {
+    useMessage().error('请输入完成的建表sql')
+    return
+  }
+  generate(props.projectId, { templateId: selectTemplateId.value, sql })
+}
+
 onMounted(() => {
-  projectDevelopRequest.map({ rows: 10, projectId: props.projectId }).then((data) => {
-    developOptions.value = data.data.map(item => ({
+  // 查询所有的开发版本map列表
+  projectDevelopRequest.map({ projectId: props.projectId }).then(({ data }) => {
+    developOptions.value = data.map(item => ({
       value: item.id,
       label: item.name,
     }))
-    // 设置为第一个信息
-    selectDevelopId.value = data.data[0].id
-    // 执行数据加载
-    handleChangeDevelop(data.data[0].id)
+    // 自动加载第一个数据
+    data.length > 0 && handleChangeDevelop(data[0].id)
   })
 })
 </script>
 
 <template>
   <NSpace>
-    <NSelect v-model:value="selectDevelopId" w-120px :options="developOptions" @update:value="handleChangeDevelop" />
-    <NSelect v-model:value="selectTemplateId" w-120px :options="templateOptions" @update:value="handleChangeTemplate" />
-    <NButton @click="exportData">
-      导出
+    <NSelect v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions" @update:value="handleChangeDevelop" />
+    <NSelect v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0" :options="templateOptions" @update:value="handleChangeTemplate" />
+    <NButton disabled strong secondary type="success" @click="handelClickGenerate">
+      生成代码
     </NButton>
-    <NButton @click="drawerVisible = true">
-      使用建表sql导出
+    <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
+      建表SQL生成代码
     </NButton>
   </NSpace>
   <br>
   <FileManage
-    v-if="visible"
-    :data="resultArray"
+    v-if="fileManageVisible"
+    :tree-data-list="fileManageTreeList"
     :get-content-method="templateDetailRequest.content"
-    :save-content-method="fileSave"
+    :save-content-method="handleFileSave"
     style="height: 800px"
   />
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
-    <NDrawerContent title="建表sql">
+    <NDrawerContent title="建表SQL">
       <NSpace>
-        <NButton @click="exportDataBySql">
-          导出
+        <NButton strong secondary type="success" @click="handelClickGenerateBySql">
+          生成代码
         </NButton>
       </NSpace>
       <br>
-      <MonacoEditor ref="monacoEditorSqlPanel" container-id="test" content="create table table_name () comment '表格备注'" language="sql" />
+      <MonacoEditor
+        ref="monacoEditorSqlPanel"
+        :content="defaultSql"
+        language="sql"
+      />
     </NDrawerContent>
   </NDrawer>
 </template>

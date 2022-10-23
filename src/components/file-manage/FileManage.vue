@@ -4,12 +4,8 @@ import type { TreeOption } from 'naive-ui'
 import { NIcon, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
-import { useMessage } from '@dc-basic-component/util'
-import { getMessageConfig } from '@dc-basic-component/config'
 import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
-
-const props = defineProps<PropsState>()
 
 interface PropsState {
   /**
@@ -26,24 +22,24 @@ interface PropsState {
   /**
    * 文件资源列表
    */
-  data: TreeOption[]
+  treeDataList: Array<TreeOption>
 }
+
+const props = defineProps<PropsState>()
 
 // 文件栏的宽度
 const fileContainerWidth = ref<number>(500)
+// 文件栏宽度的计算值
 const fileContainerWidthComputed = computed(() => `${fileContainerWidth.value}px`)
-
 // 默认选中的值（文件列表的第一项）
 const defaultSelectedKeys = ref<string[]>([])
 // 箭头样式
 const renderSwitcherIcon = () => h(NIcon, null, { default: () => h(ChevronForward) })
-
 // 编辑器对象
 const monacoEditorRef = ref<InstanceType<typeof MonacoEditor>>()
-
 // 文件管理对象
 const fileManage = ref<FileManage | undefined>(undefined)
-
+// 数据列表
 const dataList = ref<TreeOption[]>([])
 
 /**
@@ -63,8 +59,6 @@ const handleClickFile = (fileId: string, name: string) => {
  * @param options 选中的节点s
  */
 const handleClick = (keys: string[], options: TreeOption[]) => {
-  // eslint-disable-next-line no-console
-  console.log(options)
   // 获取第一层元素信息
   const option = options[0]
   // 如果存在子级（说明是文件夹，处理点击文件事件）
@@ -78,11 +72,15 @@ const handleClick = (keys: string[], options: TreeOption[]) => {
  */
 const handleClickSave = () => {
   // 获取文件的内容
-  const content = (fileManage.value!).getCurrentContent()
-  const fileId = (fileManage.value!).getCurrentFileId()
+  const content = fileManage.value!.getCurrentContent()
+  const fileId = fileManage.value!.getCurrentFileId()
   props.saveContentMethod(fileId, content)
 }
 
+/**
+ * 初始化方法
+ * @param array 原数据列表
+ */
 const init = (array: TreeOption[]) => {
   // 数据排序
   dataList.value = sortTreeOption(array)
@@ -99,12 +97,15 @@ const init = (array: TreeOption[]) => {
   handleClickFile(key, option.label!)
 }
 
-watch(() => props.data, (data) => {
-  init(data)
+/**
+ * 监听数据结构的变化
+ */
+watch(() => props.treeDataList, (treeDataList) => {
+  init(treeDataList)
 })
 
 onMounted(() => {
-  init(props.data)
+  init(props.treeDataList)
 })
 </script>
 
