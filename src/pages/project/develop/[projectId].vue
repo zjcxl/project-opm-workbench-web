@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import { NButton, NDrawer, NDrawerContent, NSelect, NSpace } from 'naive-ui'
+import { NButton, NDrawer, NDrawerContent, NEmpty, NSelect, NSpace } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
@@ -148,8 +148,9 @@ onMounted(() => {
     </NButton>
   </NSpace>
   <br>
+  <NEmpty v-if="!fileManageVisible" description="这是一个空的项目" h-300px flex justify-center />
   <FileManage
-    v-if="fileManageVisible"
+    v-else
     :tree-data-list="fileManageTreeList"
     :get-content-method="templateDetailRequest.content"
     :save-content-method="handleFileSave"
