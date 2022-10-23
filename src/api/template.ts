@@ -10,18 +10,18 @@ export default {
    * 获取所有的信息
    * @param query 查询条件
    */
-  all: (query: QueryType) => new GetRequestModel<Array<TemplateVo>>('/api/opm/template/all', query).request(),
+  all: (query: QueryType) => new GetRequestModel<Array<TemplateVo>>('/opm/template/all', query).request(),
 
   /**
    * 获取所有的信息
    * @param query 查询条件
    */
-  page: (query: QueryType) => new GetRequestModel<PageModel<TemplateVo>>('/api/opm/template/page', query).request(),
+  page: (query: QueryType) => new GetRequestModel<PageModel<TemplateVo>>('/opm/template/page', query).request(),
 
   /**
    * map
    * @param query 查询条件
    */
-  map: (query: QueryType) => new GetRequestModel<Array<TemplateMapVo>>('/api/opm/template/map', query).request(),
+  map: (query: QueryType) => new GetRequestModel<Array<TemplateMapVo>>('/opm/template/map', query).request(),
 
 }

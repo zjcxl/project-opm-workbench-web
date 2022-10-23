@@ -10,13 +10,13 @@ export default {
    * 获取所有的信息
    * @param query 查询条件
    */
-  all: (query: QueryType) => new GetRequestModel<Array<ProjectVo>>('/api/opm/project/all', query).request(),
+  all: (query: QueryType) => new GetRequestModel<Array<ProjectVo>>('/opm/project/all', query).request(),
 
   /**
    * 获取所有的信息
    * @param query 查询条件
    */
-  page: (query: QueryType) => new GetRequestModel<PageModel<ProjectVo>>('/api/opm/project/page', query).request(),
+  page: (query: QueryType) => new GetRequestModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
 
   /**
    * 生成模板信息
@@ -28,7 +28,7 @@ export default {
     projectId: string,
     templateId?: string,
     tableNameList?: Array<string>,
-  ) => new PostRequestModel<FileRecordVo>(`/api/opm/project/generate/${projectId}`, {
+  ) => new PostRequestModel<FileRecordVo>(`/opm/project/generate/${projectId}`, {
     templateId,
     tableNameList,
   }).request(),

@@ -3,6 +3,7 @@ import type { TreeOption } from 'naive-ui'
 import { NButton, NSelect, NSpace } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
+import { getRequestConfig } from '@dc-basic-component/config'
 import FileManage from '../../../components/file-manage/FileManage.vue'
 import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
@@ -22,6 +23,9 @@ const detailArray = ref<TemplateDetailVo[]>([])
 // 解析数据
 const resultArray = ref<TreeOption[]>([])
 const templateDetailMap: Record<string, TemplateDetailVo> = {}
+
+const config = getRequestConfig()
+console.log(config)
 
 const handle = (array: TemplateDetailVo[]) => {
   // 结果数组
