@@ -84,7 +84,7 @@ const handleFileSave = (id: string, content: string) => {
     return
   }
   // 修改接口
-  templateDetailRequest.update(id, { ...detail, content }).then((data) => {
+  templateDetailRequest.update(id, { ...detail, content }).then(() => {
     // 保存成功
     useMessage().success('保存成功')
   })
