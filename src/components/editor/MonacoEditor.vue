@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
 
-const props = defineProps<{ content?: string }>()
+const props = defineProps<{
+  content?: string
+  containerId?: string
+  language?: string
+}>()
 
 let monacoInstance: monaco.editor.IStandaloneCodeEditor | undefined
 
+const containerId = computed<string>(() => props.containerId || 'container')
+
 onMounted(() => {
-  monacoInstance = monaco.editor.create(document.getElementById('container')!, {
+  monacoInstance = monaco.editor.create(document.getElementById(containerId.value)!, {
     value: props.content || '',
-    language: 'java',
+    language: props.language || 'txt',
   })
 })
 
@@ -21,10 +27,12 @@ const getValue = (): string => {
 
 /**
  * 设置值
+ * @param content 设置的内容
+ * @param fileType 文件类型
  */
-const setValue = (content: string): void => {
-  if (monacoInstance)
-    monacoInstance.setValue(content)
+const setValue = (content: string, fileType = 'txt'): void => {
+  monacoInstance!.setValue(content)
+  monaco.editor.setModelLanguage(monacoInstance!.getModel()!, fileType)
 }
 
 // 暴露给父组件
@@ -37,5 +45,5 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="container" style="height: 100%;width: 100%" />
+  <div :id="containerId" style="height: 100%;width: 100%" />
 </template>

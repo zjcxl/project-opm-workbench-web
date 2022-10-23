@@ -49,9 +49,12 @@ const dataList = ref<TreeOption[]>([])
 /**
  * 选中文件的方法
  * @param fileId 文件id
+ * @param name 文件名称
  */
-const handleClickFile = (fileId: string) => {
-  fileManage.value?.getContent(fileId)
+const handleClickFile = (fileId: string, name: string) => {
+  const index = name.lastIndexOf('.')
+  const suffix = index !== -1 ? name.substring(index + 1) : ''
+  fileManage.value?.getContent(fileId, suffix)
 }
 
 /**
@@ -67,7 +70,7 @@ const handleClick = (keys: string[], options: TreeOption[]) => {
   // 如果存在子级（说明是文件夹，处理点击文件事件）
   if (!option || option.children)
     return
-  handleClickFile(keys[0])
+  handleClickFile(keys[0], option.label!)
 }
 
 /**
@@ -93,7 +96,7 @@ const init = (array: TreeOption[]) => {
   const option = getFirstOption(dataList.value)
   const key = option.key as any as string
   defaultSelectedKeys.value.push(key)
-  handleClickFile((key))
+  handleClickFile(key, option.label!)
 }
 
 watch(() => props.data, (data) => {

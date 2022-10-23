@@ -21,16 +21,15 @@ export default {
   /**
    * 生成模板信息
    * @param projectId 项目id
-   * @param templateId 模板id
-   * @param tableNameList 表名列表
+   * @param params 其他参数
    */
   generate: (
     projectId: string,
-    templateId?: string,
-    tableNameList?: Array<string>,
-  ) => new PostRequestModel<FileRecordVo>(`/opm/project/generate/${projectId}`, {
-    templateId,
-    tableNameList,
-  }).request(),
+    params?: Partial<{
+      sql: string
+      templateId: string
+      tableNameList: Array<string>
+    }>,
+  ) => new PostRequestModel<FileRecordVo>(`/opm/project/generate/${projectId}`, params).request(),
 
 }

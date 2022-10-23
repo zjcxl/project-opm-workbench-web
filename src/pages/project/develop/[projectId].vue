@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import { NButton, NSelect, NSpace } from 'naive-ui'
+import { NButton, NDrawer, NDrawerContent, NSelect, NSpace } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
-import { getRequestConfig } from '@dc-basic-component/config'
 import FileManage from '../../../components/file-manage/FileManage.vue'
+import MonacoEditor from '../../../components/editor/MonacoEditor.vue'
 import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
@@ -17,15 +17,15 @@ const developOptions = ref<SelectMixedOption[]>([])
 const templateOptions = ref<SelectMixedOption[]>([])
 const selectDevelopId = ref<string>()
 const selectTemplateId = ref<string>()
+const drawerVisible = ref<boolean>(false)
+
+const monacoEditorSqlPanel = ref<InstanceType<typeof MonacoEditor>>()
 
 const detailArray = ref<TemplateDetailVo[]>([])
 
 // 解析数据
 const resultArray = ref<TreeOption[]>([])
 const templateDetailMap: Record<string, TemplateDetailVo> = {}
-
-const config = getRequestConfig()
-console.log(config)
 
 const handle = (array: TemplateDetailVo[]) => {
   // 结果数组
@@ -111,12 +111,31 @@ const fileSave = (id: string, content: string) => {
 }
 
 const exportData = () => {
-  projectRequest.generate(props.projectId, selectTemplateId.value).then((data) => {
+  projectRequest.generate(props.projectId, {
+    templateId: selectTemplateId.value,
+  }).then((data) => {
     const file = data.data
     downloadFile(file.position + file.path, file.name)
     useMessage().success('导出成功')
-    // eslint-disable-next-line no-console
-    console.log(data)
+  })
+}
+
+/**
+ * 根据sql导出
+ */
+const exportDataBySql = () => {
+  if (!monacoEditorSqlPanel || !monacoEditorSqlPanel.value) {
+    useMessage().error('没有找到sql编辑器')
+    return
+  }
+  const content = monacoEditorSqlPanel.value.getValue()
+  projectRequest.generate(props.projectId, {
+    templateId: selectTemplateId.value,
+    sql: content,
+  }).then((data) => {
+    const file = data.data
+    downloadFile(file.position + file.path, file.name)
+    useMessage().success('导出成功')
   })
 }
 
@@ -141,24 +160,27 @@ onMounted(() => {
     <NButton @click="exportData">
       导出
     </NButton>
+    <NButton @click="drawerVisible = true">
+      使用建表sql导出
+    </NButton>
   </NSpace>
   <br>
   <FileManage
-    v-if="visible" :data="resultArray" :get-content-method="templateDetailRequest.content"
-
+    v-if="visible"
+    :data="resultArray"
+    :get-content-method="templateDetailRequest.content"
     :save-content-method="fileSave"
     style="height: 800px"
   />
-<!--  <br> -->
-<!--  <div> -->
-<!--    <NCollapse> -->
-<!--      <NCollapseItem v-for="item in detailArray" :key="item.key" :title="item.fileName" :name="item.key"> -->
-<!--        <NButton @click="getValue(item.id)"> -->
-<!--          获取 -->
-<!--        </NButton> -->
-<!--        <MonacoEditor :ref="setRefItem" :content="item.content" /> -->
-<!--        &lt;!&ndash;        <pre>{{ item.content }}</pre> &ndash;&gt; -->
-<!--      </NCollapseItem> -->
-<!--    </NCollapse> -->
-<!--  </div> -->
+  <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
+    <NDrawerContent title="建表sql">
+      <NSpace>
+        <NButton @click="exportDataBySql">
+          导出
+        </NButton>
+      </NSpace>
+      <br>
+      <MonacoEditor ref="monacoEditorSqlPanel" container-id="test" content="create table table_name () comment '表格备注'" language="sql" />
+    </NDrawerContent>
+  </NDrawer>
 </template>

@@ -79,7 +79,7 @@ export const getFirstOption = (array: TreeOption[]): TreeOption => {
 export class FileManage {
   // 编辑器对象
   protected _getEditorValue: () => string
-  protected _setEditorValue: (value: string) => void
+  protected _setEditorValue: (content: string, language?: string) => void
   // 文件缓存
   protected _fileStore: Record<string, string> = {}
   // 文件缓存（旧）
@@ -112,8 +112,9 @@ export class FileManage {
   /**
    * 获取文件内容
    * @param fileId 文件id
+   * @param language 文件语言
    */
-  getContent(fileId: string) {
+  getContent(fileId: string, language?: string) {
     // 如果有已打开的信息（需要保存）
     if (this._lastFileId) {
       this._fileStore[this._lastFileId] = this._getEditorValue()
@@ -127,13 +128,13 @@ export class FileManage {
     this._lastFileId = fileId
     // 判断有没有缓存信息
     if (this._fileStore[fileId]) {
-      this._setEditorValue(this._fileStore[fileId])
+      this._setEditorValue(this._fileStore[fileId], language)
     }
     else {
       this._getContentMethod(fileId).then((res) => {
         this._fileStore[fileId] = res.data
         this._fileOldStore[fileId] = res.data
-        this._setEditorValue(res.data)
+        this._setEditorValue(res.data, language)
       })
     }
   }
