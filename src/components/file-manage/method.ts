@@ -88,6 +88,10 @@ export class FileManage {
   protected _lastFileId = ''
   // 获取的方法
   protected _getContentMethod: (fileId: string) => Promise<ResultModel<string>>
+  // 文件id映射表（旧指向新）
+  protected _fileIdMap: Record<string, string> = {}
+  // 文件id映射表（新指向旧）
+  protected _fileIdMapSub: Record<string, string> = {}
 
   constructor(getEditorValue: () => string, setEditorValue: (value: string) => void, getContentMethod: (fileId: string) => Promise<ResultModel<string>>) {
     this._getEditorValue = getEditorValue
@@ -106,7 +110,8 @@ export class FileManage {
    * 获取当前打开的文件id
    */
   getCurrentFileId(): string {
-    return this._lastFileId
+    // 获取到的最新的那份数据
+    return this._fileIdMap[this._lastFileId] || this._lastFileId
   }
 
   /**
@@ -160,5 +165,25 @@ export class FileManage {
    */
   isUpdated(fileId: string): boolean {
     return this._fileStore[fileId] !== this._fileOldStore[fileId]
+  }
+
+  /**
+   * 更新缓存信息
+   * @param newFileId 新的文件id
+   * @param oldFileId 旧文件id
+   * @param content 文件内容
+   */
+  updateCache(newFileId: string, oldFileId: string, content: string) {
+    if (oldFileId === newFileId)
+      return
+    // 设置映射关系，如果已经有新指向旧的数据，需要删除
+    oldFileId = this._fileIdMapSub[oldFileId] || oldFileId
+    if (oldFileId)
+      delete this._fileIdMapSub[oldFileId]
+    // 更新旧缓存
+    this._fileOldStore[oldFileId] = content
+    // 将获取到的零时值设置为旧值
+    this._fileIdMap[oldFileId] = newFileId
+    this._fileIdMapSub[newFileId] = oldFileId
   }
 }

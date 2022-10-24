@@ -11,7 +11,7 @@ import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
 import templateDetailRequest from '~/api/template-detail'
-import { getTemplateDetailById, handleTemplateDetailList } from '~/util/once/template-detail-util'
+import { getTemplateDetailById, handleTemplateDetailList, setTemplateDetailById } from '~/util/once/template-detail-util'
 import type { VariableModel } from '~/entity/project/variable-model'
 
 const props = defineProps<{ projectId: string }>()
@@ -73,16 +73,25 @@ const handleChangeDevelop = (developId: string) => {
  * @param id 文件id
  * @param content 文件内容
  */
-const handleFileSave = (id: string, content: string) => {
+const handleFileSave = (id: string, content: string): Promise<string> => {
   const detail = getTemplateDetailById(id)
   if (!detail) {
     useMessage().error('没有找到已有的文件')
-    return
+    throw new Error('没有找到已有的文件')
   }
-  // 修改接口
-  templateDetailRequest.update(id, { ...detail, content }).then(() => {
-    // 保存成功
+  if (content === detail.content) {
     useMessage().success('保存成功')
+    return Promise.resolve(id)
+  }
+  return new Promise<string>((resolve) => {
+    // 修改接口
+    templateDetailRequest.update(id, { ...detail, content }).then(({ data }) => {
+      // 保存信息
+      setTemplateDetailById(id, data.id, data)
+      // 保存成功
+      useMessage().success('保存成功')
+      resolve(data.id)
+    })
   })
 }
 

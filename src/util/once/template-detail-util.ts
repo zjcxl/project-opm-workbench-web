@@ -53,3 +53,14 @@ export const handleTemplateDetailList = (array: TemplateDetailVo[]): TreeOption[
 export const getTemplateDetailById = (detailId: string): TemplateDetailVo => {
   return templateDetailStoreMap[detailId]
 }
+
+/**
+ * 根据详情id设置详情信息
+ * @param oldId 旧id
+ * @param detailId 详情id
+ * @param vo 对象信息
+ */
+export const setTemplateDetailById = (oldId: string, detailId: string, vo: TemplateDetailVo): void => {
+  delete templateDetailStoreMap[oldId]
+  templateDetailStoreMap[detailId] = vo
+}

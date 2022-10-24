@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
+import { h, nextTick, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
 import { NButton, NDivider, NIcon, NSpace, NSpin, NTag, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
@@ -20,7 +20,7 @@ interface PropsState {
    * @param fileId  文件id
    * @param content 文件内容
    */
-  saveContentMethod: (fileId: string, content: string) => void
+  saveContentMethod: (fileId: string, content: string) => Promise<string>
   /**
    * 获取所有的keys的方法
    */
@@ -47,10 +47,13 @@ const monacoEditorRef = ref<InstanceType<typeof MonacoEditor>>()
 const fileManage = ref<FileManage | undefined>(undefined)
 // 数据列表
 const dataList = ref<TreeOption[]>([])
+const dataMap: Record<string, TreeOption> = {}
 // 可用变量的列表
 const variableList = ref<Array<VariableModel>>([])
 // 变量加载提示
 const variableLoading = ref<boolean>(false)
+// 变量加载提示
+const variableTree = ref<boolean>(false)
 // 显示的面板
 const showPanel = ref<'file' | 'item'>('file')
 
@@ -62,9 +65,11 @@ const colorRecord = {
 /**
  * 选中文件的方法
  * @param fileId 文件id
- * @param name 文件名称
+ * @param option 项目信息
  */
-const handleClickFile = (fileId: string, name: string) => {
+const handleClickFile = (fileId: string, option: TreeOption) => {
+  // 处理文件信息
+  const name = option.label!
   const index = name.lastIndexOf('.')
   const suffix = index !== -1 ? name.substring(index + 1) : ''
   fileManage.value?.getContent(fileId, suffix)
@@ -81,7 +86,7 @@ const handleClick = (keys: string[], options: TreeOption[]) => {
   // 如果存在子级（说明是文件夹，处理点击文件事件）
   if (!option || option.children)
     return
-  handleClickFile(keys[0], option.label!)
+  handleClickFile(keys[0], option)
 }
 
 /**
@@ -91,7 +96,18 @@ const handleClickSave = () => {
   // 获取文件的内容
   const content = fileManage.value!.getCurrentContent()
   const fileId = fileManage.value!.getCurrentFileId()
-  props.saveContentMethod(fileId, content)
+  // 保存文件事件
+  props.saveContentMethod(fileId, content).then((newFileId) => {
+    if (fileId === newFileId)
+      return
+    // 更新缓存
+    fileManage.value!.updateCache(newFileId, fileId, content)
+    // 更新选中的信息
+    variableTree.value = false
+    nextTick(() => {
+      variableTree.value = true
+    })
+  })
 }
 
 /**
@@ -151,7 +167,7 @@ const init = (array: TreeOption[]) => {
   const option = getFirstOption(dataList.value)
   const key = option.key as any as string
   defaultSelectedKeys.value.push(key)
-  handleClickFile(key, option.label!)
+  handleClickFile(key, option)
   // 变量数据
   resolveVariable()
 }
@@ -164,6 +180,7 @@ watch(() => props.treeDataList, (treeDataList) => {
 })
 
 onMounted(() => {
+  variableTree.value = true
   init(props.treeDataList)
 })
 </script>
@@ -176,9 +193,9 @@ onMounted(() => {
         <slot name="operation" />
         <NDivider vertical />
         <!-- 外部操作功能 -->
-        <NButton strong secondary circle type="primary">
+        <NButton strong secondary circle type="primary" @click="handleClickSave">
           <template #icon>
-            <div i-carbon-save @click="handleClickSave" />
+            <div i-carbon-save />
           </template>
         </NButton>
         <NButton strong secondary circle type="primary" disabled>
@@ -215,6 +232,7 @@ onMounted(() => {
       </div>
       <div class="left">
         <NTree
+          v-if="variableTree"
           v-show="showPanel === 'file'"
           style="width: 110%;"
           block-line
