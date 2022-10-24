@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
-import { NIcon, NTree } from 'naive-ui'
+import { NButton, NDivider, NIcon, NSpace, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
 import MonacoEditor from '../editor/MonacoEditor.vue'
@@ -112,9 +112,25 @@ onMounted(() => {
 <template>
   <div class="editor-container">
     <div class="operation-panel">
-      <div class="icon-btn" i-carbon-save @click="handleClickSave" />
-      <!--      <div icon-btn i-carbon-document-add /> -->
-      <div class="icon-btn" i-carbon-folder-add />
+      <NSpace align="center">
+        <slot name="operation" />
+        <NDivider vertical />
+        <NButton strong secondary circle type="primary">
+          <template #icon>
+            <div class="icon-btn" i-carbon-save @click="handleClickSave" />
+          </template>
+        </NButton>
+        <NButton strong secondary circle type="primary" disabled>
+          <template #icon>
+            <div icon-btn i-carbon-document-add />
+          </template>
+        </NButton>
+        <NButton strong secondary circle type="primary" disabled>
+          <template #icon>
+            <div class="icon-btn" i-carbon-folder-add />
+          </template>
+        </NButton>
+      </NSpace>
     </div>
     <div class="show-panel">
       <div class="left">

@@ -135,25 +135,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <NSpace align="center">
-    <NSelect v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions" @update:value="handleChangeDevelop" />
-    <NSelect v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0" :options="templateOptions" @update:value="handleChangeTemplate" />
-    <NButton disabled strong secondary type="success" @click="handelClickGenerate">
-      生成代码
-    </NButton>
-    <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
-      建表SQL生成代码
-    </NButton>
-  </NSpace>
-  <br>
-  <NEmpty v-if="!fileManageVisible" description="这是一个空的项目" h-300px flex justify-center />
+  <NEmpty v-if="!fileManageVisible" description="这是一个空的项目" style="height: 100%" flex justify-center />
   <FileManage
     v-else
     :tree-data-list="fileManageTreeList"
     :get-content-method="templateDetailRequest.content"
     :save-content-method="handleFileSave"
-    style="height: 800px"
-  />
+    style="height: 100%"
+  >
+    <template #operation>
+      <NSelect v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions" @update:value="handleChangeDevelop" />
+      <NSelect v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0" :options="templateOptions" @update:value="handleChangeTemplate" />
+      <NButton disabled strong secondary type="success" @click="handelClickGenerate">
+        生成代码
+      </NButton>
+      <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
+        建表SQL生成代码
+      </NButton>
+    </template>
+  </FileManage>
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
     <NDrawerContent title="建表SQL">
       <NSpace align="center">
@@ -174,6 +174,7 @@ onMounted(() => {
         ref="monacoEditorSqlPanel"
         :content="defaultSql"
         language="sql"
+        style="height: 90%"
       />
     </NDrawerContent>
   </NDrawer>
