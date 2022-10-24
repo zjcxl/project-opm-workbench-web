@@ -20,6 +20,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:2023/',
+        // target: 'https://opm.51bolema.com/',
         changeOrigin: true,
         ws: true,
         rewrite: path => path.replace(/^\/api/, '/api/'),

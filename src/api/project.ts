@@ -29,6 +29,7 @@ export default {
       sql: string
       templateId: string
       tableNameList: Array<string>
+      ignoreError: 0 | 1
     }>,
   ) => new PostRequestModel<FileRecordVo>(`/opm/project/generate/${projectId}`, params).request(),
 

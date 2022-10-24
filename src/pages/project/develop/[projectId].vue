@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import { NButton, NDrawer, NDrawerContent, NEmpty, NSelect, NSpace } from 'naive-ui'
+import { NButton, NDrawer, NDrawerContent, NEmpty, NSelect, NSpace, NSwitch } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
 import FileManage from '../../../components/file-manage/FileManage.vue'
 import MonacoEditor from '../../../components/editor/MonacoEditor.vue'
+import defaultSql from '~/assets/default-sql-ddl.ts'
 import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
@@ -28,17 +29,11 @@ const monacoEditorSqlPanel = ref<InstanceType<typeof MonacoEditor>>()
 const fileManageTreeList = ref<Array<TreeOption>>([])
 // 是否文件管理内容
 const fileManageVisible = ref<boolean>(false)
+// 是否忽略sql异常信息
+const ignoreError = ref<boolean>(true)
 
 // 是否可以使用建表sql按钮
 const canUseSqlButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
-
-/**
- * 默认的sql文件内容
- */
-const defaultSql = `create table table_name (
-id varchar(32) null comment '主键id'
-) comment '表格备注'
- `
 
 /**
  * 修改模板id的方法
@@ -98,7 +93,10 @@ const generate = (projectId: string, params?: Partial<{
   templateId: string
   tableNameList: Array<string>
 }>) => {
-  projectRequest.generate(projectId, params).then(({ data: file }) => {
+  projectRequest.generate(projectId, {
+    ...params,
+    ignoreError: ignoreError.value ? 1 : 0,
+  }).then(({ data: file }) => {
     useMessage().success('文件包打包完成，即将下载！')
     downloadFile(file.position + file.path, file.name)
   })
@@ -137,7 +135,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <NSpace>
+  <NSpace align="center">
     <NSelect v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions" @update:value="handleChangeDevelop" />
     <NSelect v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0" :options="templateOptions" @update:value="handleChangeTemplate" />
     <NButton disabled strong secondary type="success" @click="handelClickGenerate">
@@ -158,10 +156,18 @@ onMounted(() => {
   />
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
     <NDrawerContent title="建表SQL">
-      <NSpace>
+      <NSpace align="center">
         <NButton strong secondary type="success" @click="handelClickGenerateBySql">
           生成代码
         </NButton>
+        <NSwitch v-model:value="ignoreError">
+          <template #checked>
+            忽略SQL异常
+          </template>
+          <template #unchecked>
+            提示SQL异常
+          </template>
+        </NSwitch>
       </NSpace>
       <br>
       <MonacoEditor
