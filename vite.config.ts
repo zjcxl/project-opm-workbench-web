@@ -6,6 +6,7 @@ import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import MonacoEditorPlugin from 'vite-plugin-monaco-editor'
 import Unocss from 'unocss/vite'
 
 export default defineConfig({
@@ -19,8 +20,8 @@ export default defineConfig({
     cors: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:2023/',
-        // target: 'https://opm.51bolema.com/',
+        // target: 'http://127.0.0.1:2023/',
+        target: 'https://opm.51bolema.com/',
         changeOrigin: true,
         ws: true,
         rewrite: path => path.replace(/^\/api/, '/api/'),
@@ -31,6 +32,8 @@ export default defineConfig({
     Vue({
       reactivityTransform: true,
     }),
+    // monaco插件
+    MonacoEditorPlugin({}),
 
     // https://github.com/hannoeru/vite-plugin-pages
     Pages(),
