@@ -4,6 +4,7 @@ import type { TreeOption } from 'naive-ui'
 import { NButton, NDivider, NIcon, NSpace, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
+import { copyText, useMessage } from '@dc-basic-component/util'
 import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
 
@@ -41,6 +42,8 @@ const monacoEditorRef = ref<InstanceType<typeof MonacoEditor>>()
 const fileManage = ref<FileManage | undefined>(undefined)
 // 数据列表
 const dataList = ref<TreeOption[]>([])
+// 显示的面板
+const showPanel = ref<'file' | 'item'>('file')
 
 /**
  * 选中文件的方法
@@ -98,6 +101,15 @@ const init = (array: TreeOption[]) => {
 }
 
 /**
+ * 点击处理复制事件
+ * @param content 复制的内容
+ */
+const handleCopyItem = (content: string) => {
+  copyText(content)
+  useMessage().success(`${content} 复制成功`)
+}
+
+/**
  * 监听数据结构的变化
  */
 watch(() => props.treeDataList, (treeDataList) => {
@@ -113,28 +125,50 @@ onMounted(() => {
   <div class="editor-container">
     <div class="operation-panel">
       <NSpace align="center">
+        <!-- 外部操作功能的插槽 -->
         <slot name="operation" />
         <NDivider vertical />
+        <!-- 外部操作功能 -->
         <NButton strong secondary circle type="primary">
           <template #icon>
-            <div class="icon-btn" i-carbon-save @click="handleClickSave" />
+            <div i-carbon-save @click="handleClickSave" />
           </template>
         </NButton>
         <NButton strong secondary circle type="primary" disabled>
           <template #icon>
-            <div icon-btn i-carbon-document-add />
+            <div i-carbon-document-add />
           </template>
         </NButton>
         <NButton strong secondary circle type="primary" disabled>
           <template #icon>
-            <div class="icon-btn" i-carbon-folder-add />
+            <div i-carbon-folder-add />
           </template>
         </NButton>
       </NSpace>
     </div>
     <div class="show-panel">
+      <div class="pre-left">
+        <NSpace vertical>
+          <NButton strong :secondary="showPanel !== 'file'" circle type="primary" @click="showPanel = 'file'">
+            <template #icon>
+              <div i-carbon-document />
+            </template>
+          </NButton>
+          <NButton strong disabled :secondary="showPanel !== 'item'" circle type="primary" @click="showPanel = 'item'">
+            <template #icon>
+              <div i-carbon-copy />
+            </template>
+          </NButton>
+          <NButton strong secondary circle type="primary" disabled>
+            <template #icon>
+              <div i-carbon-folder-add />
+            </template>
+          </NButton>
+        </NSpace>
+      </div>
       <div class="left">
         <NTree
+          v-show="showPanel === 'file'"
           style="width: 110%;"
           block-line
           :data="dataList"
@@ -148,6 +182,12 @@ onMounted(() => {
           draggable
           @update:selected-keys="handleClick"
         />
+        <div v-show="showPanel === 'item'" grid="~ gap-1" px-2 py-3>
+          <span v-for="item in 100" :key="item" cursor-pointer flex justify-start items-baseline hover:c-green @click="handleCopyItem(`\${${item}}`)">
+            <span icon-btn i-carbon-copy mr-5px />
+            测试{{ item }}
+          </span>
+        </div>
       </div>
       <div id="resize" class="middle" />
       <div class="right">
@@ -166,7 +206,7 @@ onMounted(() => {
 @import "file-manage.less";
 
 .editor-container > .show-panel {
-  grid-template-columns: v-bind(fileContainerWidthComputed) 10px 1fr;
+  grid-template-columns: 40px v-bind(fileContainerWidthComputed) 10px 1fr;
 }
 </style>
 
