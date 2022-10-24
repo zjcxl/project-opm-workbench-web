@@ -102,7 +102,7 @@ const handleCopyItem = (item: VariableModel) => {
   // 如果是value，直接复制变量
   switch (item.type) {
     case 'value':
-      copyText(item.value)
+      copyText(`\${${item.name}}`)
       break
     case 'list':
       copyText(`<#list ${item.name} as item>
