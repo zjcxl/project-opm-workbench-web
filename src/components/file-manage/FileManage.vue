@@ -55,7 +55,7 @@ const variableLoading = ref<boolean>(false)
 // 变量加载提示
 const variableTree = ref<boolean>(false)
 // 显示的面板
-const showPanel = ref<'file' | 'item'>('file')
+const showPanel = useLocalStorage<'file' | 'item'>('file_manage_show_panel', 'file')
 
 const colorRecord = {
   value: 'success',
