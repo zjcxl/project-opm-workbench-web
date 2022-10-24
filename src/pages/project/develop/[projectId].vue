@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import { NButton, NDrawer, NDrawerContent, NEmpty, NSelect, NSpace, NSwitch } from 'naive-ui'
+import { NBreadcrumb, NBreadcrumbItem, NButton, NDrawer, NDrawerContent, NDropdown, NEmpty, NSelect, NSpace, NSwitch } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
@@ -13,11 +13,15 @@ import templateRequest from '~/api/template'
 import templateDetailRequest from '~/api/template-detail'
 import { getTemplateDetailById, handleTemplateDetailList, setTemplateDetailById } from '~/util/once/template-detail-util'
 import type { VariableModel } from '~/entity/project/variable-model'
+import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 
 const props = defineProps<{ projectId: string }>()
 
 const developOptions = ref<SelectMixedOption[]>([])
 const templateOptions = ref<SelectMixedOption[]>([])
+// 项目列表
+const projectMapOptions = ref<SelectMixedOption[]>([])
+const projectMap = ref<Record<string, ProjectMapVo>>({})
 // 选中的开发id
 const selectDevelopId = ref<string>()
 // 选中的模板id
@@ -28,13 +32,15 @@ const drawerVisible = ref<boolean>(false)
 const monacoEditorSqlPanel = ref<InstanceType<typeof MonacoEditor>>()
 // 文件树列表
 const fileManageTreeList = ref<Array<TreeOption>>([])
-// 是否文件管理内容
+// 是否显示文件管理内容
 const fileManageVisible = ref<boolean>(false)
 // 是否忽略sql异常信息
 const ignoreError = useLocalStorage<boolean>('create_sql_ignore_error', true)
 
 // 是否可以使用建表sql按钮
 const canUseSqlButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
+// 当前项目的名称
+const projectInfo = computed<ProjectMapVo>(() => projectMap.value[props.projectId])
 
 /**
  * 修改模板id的方法
@@ -66,6 +72,16 @@ const handleChangeDevelop = (developId: string) => {
     // 选中第一个
     data.length > 0 && handleChangeTemplate(data[0].id)
   })
+}
+
+const router = useRouter()
+
+/**
+ * 处理项目列表
+ * @param projectId 项目id
+ */
+const handleSelectProject = (projectId: string) => {
+  router.push(`/project/develop/${projectId}`)
 }
 
 /**
@@ -142,9 +158,15 @@ const listVariable = () => {
   })
 }
 
-onMounted(() => {
+const init = (projectId = props.projectId) => {
+  // 初始化部分数据
+  developOptions.value = []
+  templateOptions.value = []
+  selectDevelopId.value = undefined
+  selectTemplateId.value = undefined
+  fileManageTreeList.value = []
   // 查询所有的开发版本map列表
-  projectDevelopRequest.map({ projectId: props.projectId }).then(({ data }) => {
+  projectDevelopRequest.map({ projectId }).then(({ data }) => {
     developOptions.value = data.map(item => ({
       value: item.id,
       label: item.name,
@@ -152,18 +174,55 @@ onMounted(() => {
     // 自动加载第一个数据
     data.length > 0 && handleChangeDevelop(data[0].id)
   })
+}
+
+// 项目id改变监听
+watch(
+  () => props.projectId,
+  (projectId) => {
+    init(projectId)
+  },
+)
+
+onMounted(() => {
+  // 查询所有的项目map
+  projectRequest.map({}).then(({ data }) => {
+    data.forEach((item) => {
+      projectMap.value[item.id] = item
+    })
+    projectMapOptions.value = data.map(item => ({
+      key: item.id,
+      label: item.name,
+    }))
+  })
+  init(props.projectId)
 })
 </script>
 
 <template>
-  <NEmpty v-if="!fileManageVisible" description="这是一个空的项目" style="height: 100%" flex justify-center />
+  <NBreadcrumb h-40px>
+    <NBreadcrumbItem href="/">
+      首页
+    </NBreadcrumbItem>
+    <NBreadcrumbItem>
+      <NDropdown :options="projectMapOptions" @select="handleSelectProject">
+        <div class="trigger">
+          {{ projectInfo?.name || '项目管理' }}
+        </div>
+      </NDropdown>
+    </NBreadcrumbItem>
+    <NBreadcrumbItem>
+      开发管理
+    </NBreadcrumbItem>
+  </NBreadcrumb>
+  <NEmpty v-if="!fileManageVisible" description="这是一个空的项目" style="height: calc(100% - 40px)" flex justify-center />
   <FileManage
     v-else
     :tree-data-list="fileManageTreeList"
     :get-content-method="templateDetailRequest.content"
     :save-content-method="handleFileSave"
     :list-variable="listVariable"
-    style="height: 100%"
+    style="height: calc(100% - 40px)"
   >
     <template #operation>
       <NSelect

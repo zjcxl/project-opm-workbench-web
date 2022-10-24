@@ -4,6 +4,7 @@ import type { ProjectVo } from '~/entity/project/project-vo'
 import type { PageModel } from '~/base/page-model'
 import type { FileRecordVo } from '~/entity/system/file-record-vo'
 import type { VariableModel } from '~/entity/project/variable-model'
+import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 
 export default {
 
@@ -18,6 +19,12 @@ export default {
    * @param query 查询条件
    */
   page: (query: QueryType) => new GetRequestModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
+
+  /**
+   * map获取所有的信息
+   * @param query 查询条件
+   */
+  map: (query?: QueryType) => new GetRequestModel<Array<ProjectMapVo>>('/opm/project/map', query).request(),
 
   /**
    * 生成模板信息

@@ -61,16 +61,16 @@ export const sortTreeOption = (array: TreeOption[]): TreeOption[] => {
  * 获取第一份信息
  * @param array 数组
  */
-export const getFirstOption = (array: TreeOption[]): TreeOption => {
+export const getFirstOption = (array: TreeOption[]): TreeOption | undefined => {
   if (array.length > 0) {
     const item = array[0]
     if (!item)
-      throw new Error('item is null')
+      return undefined
     if (item.children)
       return getFirstOption(item.children)
     return item
   }
-  throw new Error('item is null')
+  return undefined
 }
 
 /**

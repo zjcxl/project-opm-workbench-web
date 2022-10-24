@@ -47,7 +47,6 @@ const monacoEditorRef = ref<InstanceType<typeof MonacoEditor>>()
 const fileManage = ref<FileManage | undefined>(undefined)
 // 数据列表
 const dataList = ref<TreeOption[]>([])
-const dataMap: Record<string, TreeOption> = {}
 // 可用变量的列表
 const variableList = ref<Array<VariableModel>>([])
 // 变量加载提示
@@ -56,6 +55,9 @@ const variableLoading = ref<boolean>(false)
 const variableTree = ref<boolean>(false)
 // 显示的面板
 const showPanel = useLocalStorage<'file' | 'item'>('file_manage_show_panel', 'file')
+
+// 是否可以操作
+const canOperate = computed<boolean>(() => dataList.value && dataList.value.length > 0)
 
 const colorRecord = {
   value: 'success',
@@ -165,6 +167,13 @@ const init = (array: TreeOption[]) => {
   )
   // 打开第一份文件
   const option = getFirstOption(dataList.value)
+  if (!option) {
+    // 初始化所有变量信息
+    variableList.value = []
+    showPanel.value = 'file'
+    monacoEditorRef.value.setValue('')
+    return
+  }
   const key = option.key as any as string
   defaultSelectedKeys.value.push(key)
   handleClickFile(key, option)
@@ -193,7 +202,7 @@ onMounted(() => {
         <slot name="operation" />
         <NDivider vertical />
         <!-- 外部操作功能 -->
-        <NButton strong secondary circle type="primary" @click="handleClickSave">
+        <NButton strong secondary circle type="primary" :disabled="!canOperate" @click="handleClickSave">
           <template #icon>
             <div i-carbon-save />
           </template>
@@ -213,12 +222,12 @@ onMounted(() => {
     <div class="show-panel">
       <div class="pre-left">
         <NSpace vertical>
-          <NButton strong :secondary="showPanel !== 'file'" circle type="primary" @click="showPanel = 'file'">
+          <NButton strong :secondary="showPanel !== 'file'" :disabled="!canOperate" circle type="primary" @click="showPanel = 'file'">
             <template #icon>
               <div i-carbon-document />
             </template>
           </NButton>
-          <NButton strong :secondary="showPanel !== 'item'" circle type="primary" @click="showPanel = 'item'" @dblclick="resolveVariable">
+          <NButton strong :secondary="showPanel !== 'item'" :disabled="!canOperate" circle type="primary" @click="showPanel = 'item'" @dblclick="resolveVariable">
             <template #icon>
               <div i-carbon-copy />
             </template>
