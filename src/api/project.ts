@@ -3,6 +3,7 @@ import type { QueryType } from '@dc-basic-component/config'
 import type { ProjectVo } from '~/entity/project/project-vo'
 import type { PageModel } from '~/base/page-model'
 import type { FileRecordVo } from '~/entity/system/file-record-vo'
+import type { VariableModel } from '~/entity/project/variable-model'
 
 export default {
 
@@ -32,5 +33,18 @@ export default {
       ignoreError: 0 | 1
     }>,
   ) => new PostRequestModel<FileRecordVo>(`/opm/project/generate/${projectId}`, params).request(),
+
+  /**
+   * 获取所有的keys
+   * @param projectId 项目id
+   * @param params 其他参数
+   */
+  listVariable: (
+    projectId: string,
+    params?: Partial<{
+      sql: string
+      templateId: string
+    }>,
+  ) => new PostRequestModel<Array<VariableModel>>(`/opm/project/keys/${projectId}`, params).request(),
 
 }

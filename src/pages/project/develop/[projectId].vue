@@ -12,6 +12,7 @@ import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
 import templateDetailRequest from '~/api/template-detail'
 import { getTemplateDetailById, handleTemplateDetailList } from '~/util/once/template-detail-util'
+import type { VariableModel } from '~/entity/project/variable-model'
 
 const props = defineProps<{ projectId: string }>()
 
@@ -121,6 +122,17 @@ const handelClickGenerateBySql = () => {
   generate(props.projectId, { templateId: selectTemplateId.value, sql })
 }
 
+/**
+ * 获取变量列表的方法
+ */
+const listVariable = () => {
+  return new Promise<Array<VariableModel>>((resolve) => {
+    projectRequest.listVariable(props.projectId, { templateId: selectTemplateId.value }).then(({ data }) => {
+      resolve(data)
+    })
+  })
+}
+
 onMounted(() => {
   // 查询所有的开发版本map列表
   projectDevelopRequest.map({ projectId: props.projectId }).then(({ data }) => {
@@ -141,11 +153,18 @@ onMounted(() => {
     :tree-data-list="fileManageTreeList"
     :get-content-method="templateDetailRequest.content"
     :save-content-method="handleFileSave"
+    :list-variable="listVariable"
     style="height: 100%"
   >
     <template #operation>
-      <NSelect v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions" @update:value="handleChangeDevelop" />
-      <NSelect v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0" :options="templateOptions" @update:value="handleChangeTemplate" />
+      <NSelect
+        v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions"
+        @update:value="handleChangeDevelop"
+      />
+      <NSelect
+        v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0"
+        :options="templateOptions" @update:value="handleChangeTemplate"
+      />
       <NButton disabled strong secondary type="success" @click="handelClickGenerate">
         生成代码
       </NButton>

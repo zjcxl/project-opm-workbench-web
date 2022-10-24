@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { h, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
-import { NButton, NDivider, NIcon, NSpace, NTree } from 'naive-ui'
+import { NButton, NDivider, NIcon, NSpace, NSpin, NTag, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
 import { copyText, useMessage } from '@dc-basic-component/util'
 import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
+import type { VariableModel } from '~/entity/project/variable-model'
 
 interface PropsState {
   /**
@@ -20,6 +21,10 @@ interface PropsState {
    * @param content 文件内容
    */
   saveContentMethod: (fileId: string, content: string) => void
+  /**
+   * 获取所有的keys的方法
+   */
+  listVariable?: () => Promise<Array<VariableModel>>
   /**
    * 文件资源列表
    */
@@ -42,8 +47,17 @@ const monacoEditorRef = ref<InstanceType<typeof MonacoEditor>>()
 const fileManage = ref<FileManage | undefined>(undefined)
 // 数据列表
 const dataList = ref<TreeOption[]>([])
+// 可用变量的列表
+const variableList = ref<Array<VariableModel>>([])
+// 变量加载提示
+const variableLoading = ref<boolean>(false)
 // 显示的面板
 const showPanel = ref<'file' | 'item'>('file')
+
+const colorRecord = {
+  value: 'success',
+  list: 'warning',
+}
 
 /**
  * 选中文件的方法
@@ -81,6 +95,46 @@ const handleClickSave = () => {
 }
 
 /**
+ * 点击处理复制事件
+ * @param item 复制的内容
+ */
+const handleCopyItem = (item: VariableModel) => {
+  // 如果是value，直接复制变量
+  switch (item.type) {
+    case 'value':
+      copyText(item.value)
+      break
+    case 'list':
+      copyText(`<#list ${item.name} as item>
+      </#list>`)
+      break
+  }
+  useMessage().success(`${item.name} 复制成功`)
+}
+
+/**
+ * 解析变量信息
+ */
+const resolveVariable = () => {
+  if (!props.listVariable)
+    return
+  variableLoading.value = true
+  const variableNameSet = new Set()
+  props.listVariable().then((array) => {
+    array.forEach((item) => {
+      variableNameSet.add(item.name)
+    })
+    variableList.value = array.map((item) => {
+      return {
+        ...item,
+        showOrigin: variableNameSet.has(item.origin),
+      }
+    })
+    variableLoading.value = false
+  })
+}
+
+/**
  * 初始化方法
  * @param array 原数据列表
  */
@@ -98,15 +152,8 @@ const init = (array: TreeOption[]) => {
   const key = option.key as any as string
   defaultSelectedKeys.value.push(key)
   handleClickFile(key, option.label!)
-}
-
-/**
- * 点击处理复制事件
- * @param content 复制的内容
- */
-const handleCopyItem = (content: string) => {
-  copyText(content)
-  useMessage().success(`${content} 复制成功`)
+  // 变量数据
+  resolveVariable()
 }
 
 /**
@@ -154,7 +201,7 @@ onMounted(() => {
               <div i-carbon-document />
             </template>
           </NButton>
-          <NButton strong disabled :secondary="showPanel !== 'item'" circle type="primary" @click="showPanel = 'item'">
+          <NButton strong :secondary="showPanel !== 'item'" circle type="primary" @click="showPanel = 'item'" @dblclick="resolveVariable">
             <template #icon>
               <div i-carbon-copy />
             </template>
@@ -183,10 +230,35 @@ onMounted(() => {
           @update:selected-keys="handleClick"
         />
         <div v-show="showPanel === 'item'" grid="~ gap-1" px-2 py-3>
-          <span v-for="item in 100" :key="item" cursor-pointer flex justify-start items-baseline hover:c-green @click="handleCopyItem(`\${${item}}`)">
-            <span icon-btn i-carbon-copy mr-5px />
-            测试{{ item }}
-          </span>
+          <template v-if="variableLoading">
+            <NSpin size="large" />
+          </template>
+          <template v-else>
+            <div
+              v-for="(item, index) in variableList"
+              :key="index"
+              cursor-pointer
+              flex
+              justify-start
+              items-center
+              gap-2
+              hover:c-green
+              @click="handleCopyItem(item)"
+            >
+              <NTag v-if="item.type" :type="colorRecord[item.type] || 'success'" size="small" :bordered="false" strong round w-50px flex justify-center items-center>
+                {{ item.type }}
+              </NTag>
+              <div grid>
+                <template v-if="item.showOrigin">
+                  （{{ item.origin }}）
+                </template>
+                {{ item.name }}
+                <span c-gray-300>
+                  eg: {{ item.value || item.name }}
+                </span>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
       <div id="resize" class="middle" />
