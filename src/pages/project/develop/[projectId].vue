@@ -30,7 +30,7 @@ const fileManageTreeList = ref<Array<TreeOption>>([])
 // 是否文件管理内容
 const fileManageVisible = ref<boolean>(false)
 // 是否忽略sql异常信息
-const ignoreError = ref<boolean>(true)
+const ignoreError = useLocalStorage<boolean>('create_sql_ignore_error', true)
 
 // 是否可以使用建表sql按钮
 const canUseSqlButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
