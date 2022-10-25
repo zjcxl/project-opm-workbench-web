@@ -149,7 +149,7 @@ export class FileManage {
    * @param language
    */
   refreshLanguage(language: string) {
-    this._setEditorValue(this._fileStore[this._lastFileId], language)
+    this.getContent(this._lastFileId, language)
   }
 
   /**

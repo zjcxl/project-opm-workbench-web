@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { h, nextTick, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
-import { NButton, NDivider, NIcon, NSpace, NSpin, NTag, NTree } from 'naive-ui'
+import { NButton, NDivider, NIcon, NSpace, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
-import { copyText, useMessage } from '@dc-basic-component/util'
 import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
+import CopyListManage from './CopyListManage.vue'
 import type { VariableModel } from '~/entity/project/variable-model'
 import { getLanguageByFileName } from '~/util/once/language-util'
 import { useLanguageType } from '~/util/once/template-detail-util'
@@ -49,12 +49,8 @@ const monacoEditorRef = ref<InstanceType<typeof MonacoEditor>>()
 const fileManage = ref<FileManage | undefined>(undefined)
 // 数据列表
 const dataList = ref<TreeOption[]>([])
-// 可用变量的列表
-const variableList = ref<Array<VariableModel>>([])
 // 变量加载提示
-const variableLoading = ref<boolean>(false)
-// 变量加载提示
-const variableTree = ref<boolean>(false)
+const visibleTree = ref<boolean>(false)
 // 显示的面板
 const showPanel = useLocalStorage<'file' | 'item'>('file_manage_show_panel', 'file')
 // 正在编辑的文件名称
@@ -62,11 +58,6 @@ const editorFileName = ref<string>('')
 
 // 是否可以操作
 const canOperate = computed<boolean>(() => dataList.value && dataList.value.length > 0)
-
-const colorRecord = {
-  value: 'success',
-  list: 'warning',
-}
 
 /**
  * 获取代码语言
@@ -114,51 +105,10 @@ const handleClickSave = () => {
     // 更新缓存
     fileManage.value!.updateCache(newFileId, fileId, content)
     // 更新选中的信息
-    variableTree.value = false
+    visibleTree.value = false
     nextTick(() => {
-      variableTree.value = true
+      visibleTree.value = true
     })
-  })
-}
-
-/**
- * 点击处理复制事件
- * @param item 复制的内容
- */
-const handleCopyItem = (item: VariableModel) => {
-  // 如果是value，直接复制变量
-  switch (item.type) {
-    case 'value':
-      copyText(`\${${item.name}}`)
-      break
-    case 'list':
-      copyText(`<#list ${item.name} as item>
-  \${item}
-</#list>`)
-      break
-  }
-  useMessage().success(`${item.name} 已复制到剪切板`)
-}
-
-/**
- * 解析变量信息
- */
-const resolveVariable = () => {
-  if (!props.listVariable)
-    return
-  variableLoading.value = true
-  const variableNameSet = new Set()
-  props.listVariable().then((array) => {
-    array.forEach((item) => {
-      variableNameSet.add(item.name)
-    })
-    variableList.value = array.map((item) => {
-      return {
-        ...item,
-        showOrigin: variableNameSet.has(item.origin),
-      }
-    })
-    variableLoading.value = false
   })
 }
 
@@ -178,8 +128,6 @@ const init = (array: TreeOption[]) => {
   // 打开第一份文件
   const option = getFirstOption(dataList.value)
   if (!option) {
-    // 初始化所有变量信息
-    variableList.value = []
     showPanel.value = 'file'
     monacoEditorRef.value.setValue('')
     return
@@ -187,8 +135,6 @@ const init = (array: TreeOption[]) => {
   const key = option.key as any as string
   defaultSelectedKeys.value.push(key)
   handleClickFile(key, option)
-  // 变量数据
-  resolveVariable()
 }
 
 /**
@@ -206,7 +152,7 @@ watch(() => props.treeDataList, (treeDataList) => {
 })
 
 onMounted(() => {
-  variableTree.value = true
+  visibleTree.value = true
   init(props.treeDataList)
 })
 </script>
@@ -215,6 +161,11 @@ onMounted(() => {
   <div class="editor-container">
     <div class="operation-panel">
       <NSpace align="center">
+        <span>
+          {{ editorFileName }}
+        </span>
+        <!-- 外部操作功能的插槽 -->
+        <slot name="operation-start" />
         <!-- 外部操作功能的插槽 -->
         <slot name="operation" />
         <NDivider vertical />
@@ -234,20 +185,29 @@ onMounted(() => {
             <div i-carbon-folder-add />
           </template>
         </NButton>
-        <span>
-          {{ editorFileName }}
-        </span>
+        <!-- 外部操作功能的插槽 -->
+        <slot name="operation-end" />
       </NSpace>
     </div>
     <div class="show-panel">
       <div class="pre-left">
         <NSpace vertical>
-          <NButton strong :secondary="showPanel !== 'file'" :disabled="!canOperate" circle type="primary" @click="showPanel = 'file'">
+          <NButton
+            strong :secondary="showPanel !== 'file'" :disabled="!canOperate" circle type="primary"
+            @click="showPanel = 'file'"
+          >
             <template #icon>
               <div i-carbon-document />
             </template>
           </NButton>
-          <NButton strong :secondary="showPanel !== 'item'" :disabled="!canOperate" circle type="primary" @click="showPanel = 'item'" @dblclick="resolveVariable">
+          <NButton
+            strong
+            :secondary="showPanel !== 'item'"
+            :disabled="!canOperate"
+            circle
+            type="primary"
+            @click="showPanel = 'item'"
+          >
             <template #icon>
               <div i-carbon-copy />
             </template>
@@ -261,7 +221,7 @@ onMounted(() => {
       </div>
       <div class="left">
         <NTree
-          v-if="variableTree"
+          v-if="visibleTree"
           v-show="showPanel === 'file'"
           style="width: 110%;"
           block-line
@@ -277,35 +237,7 @@ onMounted(() => {
           @update:selected-keys="handleClick"
         />
         <div v-show="showPanel === 'item'" grid="~ gap-1" px-2 py-3>
-          <template v-if="variableLoading">
-            <NSpin size="large" />
-          </template>
-          <template v-else>
-            <div
-              v-for="(item, index) in variableList"
-              :key="index"
-              cursor-pointer
-              flex
-              justify-start
-              items-center
-              gap-2
-              hover:c-green
-              @click="handleCopyItem(item)"
-            >
-              <NTag v-if="item.type" :type="colorRecord[item.type] || 'success'" size="small" :bordered="false" strong round w-50px flex justify-center items-center>
-                {{ item.type }}
-              </NTag>
-              <div grid>
-                <template v-if="item.showOrigin">
-                  （{{ item.origin }}）
-                </template>
-                {{ item.name }}
-                <span c-gray-300>
-                  eg: {{ item.value || item.name }}
-                </span>
-              </div>
-            </div>
-          </template>
+          <CopyListManage :list-variable="props.listVariable" />
         </div>
       </div>
       <div id="resize" class="middle" />

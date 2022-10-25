@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    CopyListManage: typeof import('./src/components/file-manage/CopyListManage.vue')['default']
     FileManage: typeof import('./src/components/file-manage/FileManage.vue')['default']
     MonacoEditor: typeof import('./src/components/editor/MonacoEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import { NBreadcrumb, NBreadcrumbItem, NButton, NDrawer, NDrawerContent, NDropdown, NEmpty, NSelect, NSpace, NSwitch } from 'naive-ui'
+import {
+  NBreadcrumb,
+  NBreadcrumbItem,
+  NButton,
+  NDrawer,
+  NDrawerContent,
+  NDropdown,
+  NEmpty,
+  NSpace,
+  NSwitch,
+} from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
@@ -11,17 +21,28 @@ import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
 import templateDetailRequest from '~/api/template-detail'
-import { getTemplateDetailById, handleTemplateDetailList, setTemplateDetailById, useLanguageType } from '~/util/once/template-detail-util'
+import {
+  getTemplateDetailById,
+  handleTemplateDetailList,
+  setTemplateDetailById,
+  useLanguageType,
+} from '~/util/once/template-detail-util'
 import type { VariableModel } from '~/entity/project/variable-model'
 import type { ProjectMapVo } from '~/entity/project/project-map-vo'
+import type { ProjectDevelopMapVo } from '~/entity/project/project-develop-map-vo'
+import type { TemplateMapVo } from '~/entity/project/template-map-vo'
 
 const props = defineProps<{ projectId: string }>()
 
-const developOptions = ref<SelectMixedOption[]>([])
-const templateOptions = ref<SelectMixedOption[]>([])
 // 项目列表
 const projectMapOptions = ref<SelectMixedOption[]>([])
 const projectMap = ref<Record<string, ProjectMapVo>>({})
+// 开发信息
+const developOptions = ref<SelectMixedOption[]>([])
+const developMap = ref<Record<string, ProjectDevelopMapVo>>({})
+// 模板信息
+const templateOptions = ref<SelectMixedOption[]>([])
+const templateMap = ref<Record<string, TemplateMapVo>>({})
 // 选中的开发id
 const selectDevelopId = ref<string>()
 // 选中的模板id
@@ -41,6 +62,18 @@ const ignoreError = useLocalStorage<boolean>('create_sql_ignore_error', true)
 const canUseSqlButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
 // 当前项目的名称
 const projectInfo = computed<ProjectMapVo>(() => projectMap.value[props.projectId])
+const showProjectOptions = computed<SelectMixedOption[]>(() => projectMapOptions.value.filter(item => item.key !== props.projectId))
+// 当前开发信息
+const projectDevelopInfo = computed<ProjectDevelopMapVo>(() => developMap.value[selectDevelopId.value || ''])
+const showProjectDevelopOptions = computed<SelectMixedOption[]>(() => developOptions.value.filter(item => item.key !== selectDevelopId.value))
+// 模板信息
+const templateInfo = computed<TemplateMapVo>(() => templateMap.value[selectTemplateId.value || ''])
+const showTemplateOptions = computed<SelectMixedOption[]>(() => templateOptions.value.filter((item) => {
+  console.log(item.key)
+  console.log(selectTemplateId.value)
+
+  return item.key !== selectTemplateId.value
+}))
 
 /**
  * 修改模板id的方法
@@ -65,7 +98,11 @@ const handleChangeDevelop = (developId: string) => {
   selectDevelopId.value = developId
   // 查询模板map列表
   templateRequest.map({ developId }).then(({ data }) => {
+    data.forEach((item) => {
+      templateMap.value[item.id] = item
+    })
     templateOptions.value = data.map(item => ({
+      key: item.id,
       value: item.id,
       label: item.name,
     }))
@@ -167,7 +204,11 @@ const init = (projectId = props.projectId) => {
   fileManageTreeList.value = []
   // 查询所有的开发版本map列表
   projectDevelopRequest.map({ projectId }).then(({ data }) => {
+    data.forEach((item) => {
+      developMap.value[item.id] = item
+    })
     developOptions.value = data.map(item => ({
+      key: item.id,
       value: item.id,
       label: item.name,
     }))
@@ -192,6 +233,7 @@ onMounted(() => {
     })
     projectMapOptions.value = data.map(item => ({
       key: item.id,
+      value: item.id,
       label: item.name,
     }))
   })
@@ -200,22 +242,54 @@ onMounted(() => {
 </script>
 
 <template>
-  <NBreadcrumb h-40px>
+  <NBreadcrumb h-40px select-none>
     <NBreadcrumbItem href="/">
       首页
     </NBreadcrumbItem>
     <NBreadcrumbItem>
-      <NDropdown :options="projectMapOptions" @select="handleSelectProject">
-        <div class="trigger">
-          {{ projectInfo?.name || '项目管理' }}
-        </div>
-      </NDropdown>
+      <template v-if="showProjectOptions.length > 0">
+        <NDropdown :options="showProjectOptions" @select="handleSelectProject">
+          <div class="trigger">
+            {{ projectInfo?.name || '项目管理' }}
+          </div>
+        </NDropdown>
+      </template>
+      <template v-else>
+        {{ projectInfo?.name || '项目管理' }}
+      </template>
     </NBreadcrumbItem>
     <NBreadcrumbItem>
-      开发管理
+      <template v-if="showProjectDevelopOptions.length > 0">
+        <NDropdown :options="showProjectDevelopOptions" @select="handleChangeDevelop">
+          <div class="trigger">
+            {{ projectDevelopInfo?.name || '开发管理' }}
+          </div>
+        </NDropdown>
+      </template>
+      <template v-else>
+        {{ projectDevelopInfo?.name || '开发管理' }}
+      </template>
+    </NBreadcrumbItem>
+    <NBreadcrumbItem>
+      <template v-if="showTemplateOptions.length > 0">
+        <NDropdown :options="showTemplateOptions" @select="handleChangeTemplate">
+          <div class="trigger">
+            {{ templateInfo?.name || '模板管理' }}
+          </div>
+        </NDropdown>
+      </template>
+      <template v-else>
+        {{ templateInfo?.name || '模板管理' }}
+      </template>
+    </NBreadcrumbItem>
+    <NBreadcrumbItem href="/">
+      信息配置
     </NBreadcrumbItem>
   </NBreadcrumb>
-  <NEmpty v-if="!fileManageVisible" description="这是一个空的项目" style="height: calc(100% - 40px)" flex justify-center />
+  <NEmpty
+    v-if="!fileManageVisible" description="这是一个空的项目" style="height: calc(100% - 40px)" flex
+    justify-center
+  />
   <FileManage
     v-else
     :tree-data-list="fileManageTreeList"
@@ -225,20 +299,6 @@ onMounted(() => {
     style="height: calc(100% - 40px)"
   >
     <template #operation>
-      <NSelect
-        v-model:value="selectDevelopId" w-120px :disabled="developOptions.length === 0" :options="developOptions"
-        @update:value="handleChangeDevelop"
-      />
-      <NSelect
-        v-model:value="selectTemplateId" w-120px :disabled="templateOptions.length === 0"
-        :options="templateOptions" @update:value="handleChangeTemplate"
-      />
-      <NButton disabled strong secondary type="success" @click="handelClickGenerate">
-        生成代码
-      </NButton>
-      <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
-        建表SQL生成代码
-      </NButton>
       <NSwitch v-model:value="useLanguageType">
         <template #checked>
           使用文件语言
@@ -247,6 +307,14 @@ onMounted(() => {
           使用模板语言
         </template>
       </NSwitch>
+    </template>
+    <template #operation-end>
+      <NButton disabled strong secondary type="success" @click="handelClickGenerate">
+        生成代码
+      </NButton>
+      <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
+        建表SQL生成代码
+      </NButton>
     </template>
   </FileManage>
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
