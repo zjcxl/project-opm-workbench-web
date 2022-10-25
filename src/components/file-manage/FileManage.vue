@@ -133,10 +133,11 @@ const handleCopyItem = (item: VariableModel) => {
       break
     case 'list':
       copyText(`<#list ${item.name} as item>
-      </#list>`)
+  \${item}
+</#list>`)
       break
   }
-  useMessage().success(`${item.name} 复制成功`)
+  useMessage().success(`${item.name} 已复制到剪切板`)
 }
 
 /**
