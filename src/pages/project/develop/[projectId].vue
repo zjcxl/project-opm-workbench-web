@@ -1,24 +1,10 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import {
-  NBreadcrumb,
-  NBreadcrumbItem,
-  NButton,
-  NCard,
-  NDrawer,
-  NDrawerContent,
-  NDropdown,
-  NEmpty,
-  NModal,
-  NSpace,
-  NSwitch,
-} from 'naive-ui'
+import { NBreadcrumb, NBreadcrumbItem, NButton, NDrawer, NDropdown, NEmpty, NSwitch } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
-import { downloadFile, useMessage } from '@dc-basic-component/util'
+import { useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
 import FileManage from '../../../components/file-manage/FileManage.vue'
-import MonacoEditor from '../../../components/editor/MonacoEditor.vue'
-import defaultSql from '~/assets/default-sql-ddl.ts'
 import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
@@ -34,6 +20,7 @@ import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 import type { ProjectDevelopMapVo } from '~/entity/project/project-develop-map-vo'
 import type { TemplateMapVo } from '~/entity/project/template-map-vo'
 import TableSchemaExport from '~/components/project/TableSchemaExport.vue'
+import TableSqlExport from '~/components/project/TableSqlExport.vue'
 
 const props = defineProps<{ projectId: string }>()
 
@@ -52,16 +39,12 @@ const selectDevelopId = ref<string>()
 const selectTemplateId = ref<string>()
 // 建表sql输入抽屉开关
 const drawerVisible = ref<boolean>(false)
-// sql编辑面板
-const monacoEditorSqlPanel = ref<InstanceType<typeof MonacoEditor>>()
 // 文件树列表
 const fileManageTreeList = ref<Array<TreeOption>>([])
 // 是否显示文件管理内容
 const fileManageVisible = ref<boolean>(false)
 // schema导出的方法面板展示
 const visibleSchemaExportPanel = ref<boolean>(false)
-// 是否忽略sql异常信息
-const ignoreError = useLocalStorage<boolean>('create_sql_ignore_error', true)
 
 // 是否可以使用建表sql按钮
 const canExportButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
@@ -146,42 +129,6 @@ const handleFileSave = (id: string, content: string): Promise<string> => {
       resolve(data.id)
     })
   })
-}
-
-/**
- * 生成代码（调用后端的方法）
- */
-const generate = (projectId: string, params?: Partial<{
-  sql: string
-  templateId: string
-  tableNameList: Array<string>
-}>) => {
-  projectRequest.generate(projectId, {
-    ...params,
-    ignoreError: ignoreError.value ? 1 : 0,
-  }).then(({ data: file }) => {
-    useMessage().success('文件包打包完成，即将下载！')
-    downloadFile(file.position + file.path, file.name)
-  })
-}
-
-/**
- * 点击生成代码事件
- */
-const handelClickGenerate = () => {
-  generate(props.projectId, { templateId: selectTemplateId.value })
-}
-
-/**
- * 点击建表sql生成代码事件
- */
-const handelClickGenerateBySql = () => {
-  const sql = monacoEditorSqlPanel?.value?.getValue()
-  if (!sql) {
-    useMessage().error('请输入完成的建表sql')
-    return
-  }
-  generate(props.projectId, { templateId: selectTemplateId.value, sql })
 }
 
 /**
@@ -317,31 +264,12 @@ onMounted(() => {
       </NButton>
     </template>
   </FileManage>
+  <!-- 选择数据表生成的面板 -->
   <NDrawer v-model:show="visibleSchemaExportPanel" width="90%" placement="right">
-    <TableSchemaExport :project-id="props.projectId" :template-id="selectTemplateId" />
+    <TableSchemaExport v-if="visibleSchemaExportPanel" :project-id="props.projectId" :template-id="selectTemplateId" />
   </NDrawer>
+  <!-- 使用建表sql生成的面板 -->
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
-    <NDrawerContent title="建表SQL">
-      <NSpace align="center">
-        <NButton strong secondary type="success" @click="handelClickGenerateBySql">
-          生成代码
-        </NButton>
-        <NSwitch v-model:value="ignoreError">
-          <template #checked>
-            忽略SQL异常
-          </template>
-          <template #unchecked>
-            提示SQL异常
-          </template>
-        </NSwitch>
-      </NSpace>
-      <br>
-      <MonacoEditor
-        ref="monacoEditorSqlPanel"
-        :content="defaultSql"
-        language="sql"
-        style="height: 90%"
-      />
-    </NDrawerContent>
+    <TableSqlExport v-if="drawerVisible" :project-id="props.projectId" :template-id="selectTemplateId" />
   </NDrawer>
 </template>

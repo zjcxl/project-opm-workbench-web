@@ -13,5 +13,6 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TableSchemaExport: typeof import('./src/components/project/TableSchemaExport.vue')['default']
+    TableSqlExport: typeof import('./src/components/project/TableSqlExport.vue')['default']
   }
 }
