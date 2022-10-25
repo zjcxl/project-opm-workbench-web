@@ -8,6 +8,8 @@ import { copyText, useMessage } from '@dc-basic-component/util'
 import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
 import type { VariableModel } from '~/entity/project/variable-model'
+import { getLanguageByFileName } from '~/util/once/language-util'
+import { useLanguageType } from '~/util/once/template-detail-util'
 
 interface PropsState {
   /**
@@ -55,6 +57,8 @@ const variableLoading = ref<boolean>(false)
 const variableTree = ref<boolean>(false)
 // 显示的面板
 const showPanel = useLocalStorage<'file' | 'item'>('file_manage_show_panel', 'file')
+// 正在编辑的文件名称
+const editorFileName = ref<string>('')
 
 // 是否可以操作
 const canOperate = computed<boolean>(() => dataList.value && dataList.value.length > 0)
@@ -65,16 +69,21 @@ const colorRecord = {
 }
 
 /**
+ * 获取代码语言
+ * @param fileName 文件名
+ */
+const getLanguage = (fileName: string) => {
+  return useLanguageType.value ? getLanguageByFileName(fileName) : 'freemarker2.tag-angle.interpolation-dollar'
+}
+
+/**
  * 选中文件的方法
  * @param fileId 文件id
  * @param option 项目信息
  */
 const handleClickFile = (fileId: string, option: TreeOption) => {
-  // 处理文件信息
-  const name = option.label!
-  const index = name.lastIndexOf('.')
-  const suffix = index !== -1 ? name.substring(index + 1) : ''
-  fileManage.value?.getContent(fileId, suffix)
+  editorFileName.value = option.label!
+  fileManage.value?.getContent(fileId, getLanguage(option.label!))
 }
 
 /**
@@ -182,6 +191,13 @@ const init = (array: TreeOption[]) => {
 }
 
 /**
+ * 监听模板的信息变化
+ */
+watch(() => useLanguageType.value, () => {
+  fileManage.value?.refreshLanguage(getLanguage(editorFileName.value))
+})
+
+/**
  * 监听数据结构的变化
  */
 watch(() => props.treeDataList, (treeDataList) => {
@@ -217,6 +233,9 @@ onMounted(() => {
             <div i-carbon-folder-add />
           </template>
         </NButton>
+        <span>
+          {{ editorFileName }}
+        </span>
       </NSpace>
     </div>
     <div class="show-panel">

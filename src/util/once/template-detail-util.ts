@@ -1,6 +1,9 @@
 import type { TreeOption } from 'naive-ui'
 import type { TemplateDetailVo } from '~/entity/project/template-detail-vo'
 
+// 使用语言的类型
+export const useLanguageType = useLocalStorage<boolean>('use_language_type', true)
+
 /**
  * 模板数据缓存对象
  */

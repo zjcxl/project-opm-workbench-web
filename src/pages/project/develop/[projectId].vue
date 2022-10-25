@@ -11,7 +11,7 @@ import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
 import templateRequest from '~/api/template'
 import templateDetailRequest from '~/api/template-detail'
-import { getTemplateDetailById, handleTemplateDetailList, setTemplateDetailById } from '~/util/once/template-detail-util'
+import { getTemplateDetailById, handleTemplateDetailList, setTemplateDetailById, useLanguageType } from '~/util/once/template-detail-util'
 import type { VariableModel } from '~/entity/project/variable-model'
 import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 
@@ -239,6 +239,14 @@ onMounted(() => {
       <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
         建表SQL生成代码
       </NButton>
+      <NSwitch v-model:value="useLanguageType">
+        <template #checked>
+          使用文件语言
+        </template>
+        <template #unchecked>
+          使用模板语言
+        </template>
+      </NSwitch>
     </template>
   </FileManage>
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">

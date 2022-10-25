@@ -145,6 +145,14 @@ export class FileManage {
   }
 
   /**
+   * 刷新
+   * @param language
+   */
+  refreshLanguage(language: string) {
+    this._setEditorValue(this._fileStore[this._lastFileId], language)
+  }
+
+  /**
    * 清除缓存
    */
   clearStore() {
