@@ -12,5 +12,6 @@ declare module '@vue/runtime-core' {
     MonacoEditor: typeof import('./src/components/editor/MonacoEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TableSchemaExport: typeof import('./src/components/project/TableSchemaExport.vue')['default']
   }
 }

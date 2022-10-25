@@ -4,10 +4,12 @@ import {
   NBreadcrumb,
   NBreadcrumbItem,
   NButton,
+  NCard,
   NDrawer,
   NDrawerContent,
   NDropdown,
   NEmpty,
+  NModal,
   NSpace,
   NSwitch,
 } from 'naive-ui'
@@ -31,6 +33,7 @@ import type { VariableModel } from '~/entity/project/variable-model'
 import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 import type { ProjectDevelopMapVo } from '~/entity/project/project-develop-map-vo'
 import type { TemplateMapVo } from '~/entity/project/template-map-vo'
+import TableSchemaExport from '~/components/project/TableSchemaExport.vue'
 
 const props = defineProps<{ projectId: string }>()
 
@@ -55,11 +58,13 @@ const monacoEditorSqlPanel = ref<InstanceType<typeof MonacoEditor>>()
 const fileManageTreeList = ref<Array<TreeOption>>([])
 // 是否显示文件管理内容
 const fileManageVisible = ref<boolean>(false)
+// schema导出的方法面板展示
+const visibleSchemaExportPanel = ref<boolean>(false)
 // 是否忽略sql异常信息
 const ignoreError = useLocalStorage<boolean>('create_sql_ignore_error', true)
 
 // 是否可以使用建表sql按钮
-const canUseSqlButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
+const canExportButton = computed<boolean>(() => fileManageTreeList.value.length > 0)
 // 当前项目的名称
 const projectInfo = computed<ProjectMapVo>(() => projectMap.value[props.projectId])
 const showProjectOptions = computed<SelectMixedOption[]>(() => projectMapOptions.value.filter(item => item.key !== props.projectId))
@@ -68,12 +73,7 @@ const projectDevelopInfo = computed<ProjectDevelopMapVo>(() => developMap.value[
 const showProjectDevelopOptions = computed<SelectMixedOption[]>(() => developOptions.value.filter(item => item.key !== selectDevelopId.value))
 // 模板信息
 const templateInfo = computed<TemplateMapVo>(() => templateMap.value[selectTemplateId.value || ''])
-const showTemplateOptions = computed<SelectMixedOption[]>(() => templateOptions.value.filter((item) => {
-  console.log(item.key)
-  console.log(selectTemplateId.value)
-
-  return item.key !== selectTemplateId.value
-}))
+const showTemplateOptions = computed<SelectMixedOption[]>(() => templateOptions.value.filter(item => item.key !== selectTemplateId.value))
 
 /**
  * 修改模板id的方法
@@ -309,14 +309,17 @@ onMounted(() => {
       </NSwitch>
     </template>
     <template #operation-end>
-      <NButton disabled strong secondary type="success" @click="handelClickGenerate">
-        生成代码
+      <NButton strong secondary type="success" :disabled="!canExportButton" @click="visibleSchemaExportPanel = true">
+        数据表生成代码
       </NButton>
-      <NButton strong secondary type="success" :disabled="!canUseSqlButton" @click="drawerVisible = true">
+      <NButton strong secondary type="success" :disabled="!canExportButton" @click="drawerVisible = true">
         建表SQL生成代码
       </NButton>
     </template>
   </FileManage>
+  <NDrawer v-model:show="visibleSchemaExportPanel" width="90%" placement="right">
+    <TableSchemaExport :project-id="props.projectId" :template-id="selectTemplateId" />
+  </NDrawer>
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
     <NDrawerContent title="建表SQL">
       <NSpace align="center">

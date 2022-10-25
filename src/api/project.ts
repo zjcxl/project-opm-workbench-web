@@ -5,6 +5,7 @@ import type { PageModel } from '~/base/page-model'
 import type { FileRecordVo } from '~/entity/system/file-record-vo'
 import type { VariableModel } from '~/entity/project/variable-model'
 import type { ProjectMapVo } from '~/entity/project/project-map-vo'
+import type { TableSchemaVo } from '~/entity/project/table-schema-vo'
 
 export default {
 
@@ -53,5 +54,12 @@ export default {
       templateId: string
     }>,
   ) => new PostRequestModel<Array<VariableModel>>(`/opm/project/keys/${projectId}`, params).request(),
+
+  /**
+   * 获取所有的schema
+   * @param projectId 项目id
+   * @param templateId 模板id
+   */
+  schema: (projectId: string, templateId?: string) => new PostRequestModel<Array<TableSchemaVo>>(`/opm/project/schema/${projectId}`, { templateId }).request(),
 
 }
