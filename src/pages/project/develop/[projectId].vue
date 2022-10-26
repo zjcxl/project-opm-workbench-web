@@ -229,7 +229,7 @@ onMounted(() => {
         {{ templateInfo?.name || '模板管理' }}
       </template>
     </NBreadcrumbItem>
-    <NBreadcrumbItem href="/">
+    <NBreadcrumbItem>
       信息配置
     </NBreadcrumbItem>
   </NBreadcrumb>
