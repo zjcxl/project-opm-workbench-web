@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NSpin, NTag } from 'naive-ui'
 import { copyText, useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
 import type { VariableModel } from '~/entity/project/variable-model'

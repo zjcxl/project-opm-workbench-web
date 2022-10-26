@@ -1,4 +1,4 @@
-import { GetRequestModel, PostRequestModel } from '@dc-basic-component/request'
+import { GetRequestModel, PostRequestModel, PutRequestModel } from '@dc-basic-component/request'
 import type { QueryType } from '@dc-basic-component/config'
 import type { ProjectVo } from '~/entity/project/project-vo'
 import type { PageModel } from '~/base/page-model'
@@ -6,6 +6,7 @@ import type { FileRecordVo } from '~/entity/system/file-record-vo'
 import type { VariableModel } from '~/entity/project/variable-model'
 import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 import type { TableSchemaVo } from '~/entity/project/table-schema-vo'
+import type { ProjectDto } from '~/entity/project/project-dto'
 
 export default {
 
@@ -13,19 +14,38 @@ export default {
    * 获取所有的信息
    * @param query 查询条件
    */
-  all: (query: QueryType) => new GetRequestModel<Array<ProjectVo>>('/opm/project/all', query).request(),
+  all: (query: QueryType) => new PostRequestModel<Array<ProjectVo>>('/opm/project/all', query).request(),
 
   /**
    * 获取所有的信息
    * @param query 查询条件
    */
-  page: (query: QueryType) => new GetRequestModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
+  page: (query: QueryType) => new PostRequestModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
 
   /**
    * map获取所有的信息
    * @param query 查询条件
    */
-  map: (query?: QueryType) => new GetRequestModel<Array<ProjectMapVo>>('/opm/project/map', query).request(),
+  map: (query?: QueryType) => new PostRequestModel<Array<ProjectMapVo>>('/opm/project/map', query).request(),
+
+  /**
+   * 根据id获取信息
+   * @param id 主键id
+   */
+  getById: (id: string) => new GetRequestModel<ProjectVo>(`/opm/project/${id}`).request(),
+
+  /**
+   * 新增
+   * @param form 表单信息
+   */
+  add: (form: ProjectDto) => new PostRequestModel<ProjectVo>('/opm/project/', form).request(),
+
+  /**
+   * 修改
+   * @param id 主键id
+   * @param form 表单信息
+   */
+  update: (id: string, form: ProjectDto) => new PutRequestModel<ProjectVo>(`/opm/project/${id}`, form).request(),
 
   /**
    * 生成模板信息

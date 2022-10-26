@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NButton, NDrawerContent, NSpace, NSwitch } from 'naive-ui'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
 import defaultSql from './default-sql-ddl.ts'

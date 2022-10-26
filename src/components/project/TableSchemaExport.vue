@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NButton, NCard, NCheckbox, NDivider, NGrid, NGridItem, NInput, NPopover, NSpace } from 'naive-ui'
 import { ref } from 'vue'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import projectRequest from '~/api/project'

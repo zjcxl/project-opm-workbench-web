@@ -10,13 +10,13 @@ export default {
    * 获取所有的信息
    * @param query 查询条件
    */
-  all: (query: QueryType) => new GetRequestModel<Array<TemplateDetailVo>>('/opm/template/detail/all', query).request(),
+  all: (query: QueryType) => new PostRequestModel<Array<TemplateDetailVo>>('/opm/template/detail/all', query).request(),
 
   /**
    * 获取所有的信息
    * @param query 查询条件
    */
-  page: (query: QueryType) => new GetRequestModel<PageModel<TemplateDetailVo>>('/opm/template/detail/page', query).request(),
+  page: (query: QueryType) => new PostRequestModel<PageModel<TemplateDetailVo>>('/opm/template/detail/page', query).request(),
 
   /**
    * 获取所有的信息

@@ -3,11 +3,13 @@
 import path from 'path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
+import VueJsx from '@vitejs/plugin-vue-jsx'
 import Pages from 'vite-plugin-pages'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import MonacoEditorPlugin from 'vite-plugin-monaco-editor'
 import Unocss from 'unocss/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
   resolve: {
@@ -32,6 +34,7 @@ export default defineConfig({
     Vue({
       reactivityTransform: true,
     }),
+    VueJsx(),
     // monaco插件
     MonacoEditorPlugin({}),
 
@@ -56,6 +59,7 @@ export default defineConfig({
     // https://github.com/antfu/vite-plugin-components
     Components({
       dts: true,
+      resolvers: [NaiveUiResolver()],
     }),
 
     // https://github.com/antfu/unocss

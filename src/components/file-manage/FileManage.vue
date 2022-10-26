@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { h, nextTick, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
-import { NButton, NDivider, NIcon, NSpace, NTree } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
+import { NIcon } from 'naive-ui'
 import MonacoEditor from '../editor/MonacoEditor.vue'
 import { FileManage, getFirstOption, renderLabel, renderPrefix, sortTreeOption } from './method'
 import CopyListManage from './CopyListManage.vue'

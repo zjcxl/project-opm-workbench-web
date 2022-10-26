@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TreeOption } from 'naive-ui'
-import { NBreadcrumb, NBreadcrumbItem, NButton, NDrawer, NDropdown, NEmpty, NSwitch } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { useMessage } from '@dc-basic-component/util'
 import { ref } from 'vue'
