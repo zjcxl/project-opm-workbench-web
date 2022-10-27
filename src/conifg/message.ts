@@ -42,10 +42,13 @@ export const messageConfig: MessageUtilConfig<string, void> = {
       })
     },
     confirm(title: string | (() => string), ok?: () => void, cancel?: () => void): void {
-      dialogUtil.warning({
-        onAfterEnter: ok,
-        onAfterLeave: cancel,
-        title,
+      dialogUtil.success({
+        onPositiveClick: ok,
+        onNegativeClick: cancel,
+        positiveText: '确定',
+        negativeText: '取消',
+        content: title,
+        title: '确认信息',
       })
     },
   },

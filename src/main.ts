@@ -8,10 +8,13 @@ import './styles/reset.css'
 import './styles/main.css'
 import 'uno.css'
 import { messageConfig } from '~/conifg/message'
+import { requestConfig } from '~/conifg/request'
 
 // 设置请求信息
 defineProjectConfig({
   baseUrl: '/api',
+  // 请求工具配置
+  request: requestConfig,
   // 消息工具配置
   message: messageConfig,
 })

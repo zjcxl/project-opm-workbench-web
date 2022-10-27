@@ -2,9 +2,9 @@ lockfileVersion: 5.4
 
 specifiers:
   '@antfu/eslint-config': ^0.27.0
-  '@dc-basic-component/config': 1.0.2
-  '@dc-basic-component/request': 1.0.5
-  '@dc-basic-component/util': 1.0.5
+  '@dc-basic-component/config': 1.0.12
+  '@dc-basic-component/request': 1.0.13
+  '@dc-basic-component/util': 1.0.12
   '@iconify-json/carbon': ^1.1.9
   '@types/node': ^18.11.5
   '@unocss/reset': ^0.45.30
@@ -34,9 +34,9 @@ specifiers:
   vue-tsc: ^1.0.9
 
 dependencies:
-  '@dc-basic-component/config': 1.0.2
-  '@dc-basic-component/request': 1.0.5
-  '@dc-basic-component/util': 1.0.5
+  '@dc-basic-component/config': 1.0.12
+  '@dc-basic-component/request': 1.0.13
+  '@dc-basic-component/util': 1.0.12
   '@vueuse/core': 9.4.0_vue@3.2.41
   vue: 3.2.41
   vue-router: 4.1.6_vue@3.2.41
@@ -488,20 +488,20 @@ packages:
       vue: 3.2.41
     dev: true
 
-  /@dc-basic-component/config/1.0.2:
-    resolution: {integrity: sha512-PKVntEor9FN/fm+I+PU+cyGIsWDruV2muftWkVtLaBeA1UXSdzWuB9FfIRzlVpYXu/rZtq9Natbp+QDwmN7UUQ==}
+  /@dc-basic-component/config/1.0.12:
+    resolution: {integrity: sha512-y6SF6fpC46OO+eaEeOPfJuIq1jMCd7B2Q96kL8lLBB3vEvm7CoTdBPTST4B4a6JBhjmdwQGdaX8xvz1uF+6rIQ==}
     engines: {node: '>=16'}
     dependencies:
       vue: 3.2.41
       vue-router: 4.1.6_vue@3.2.41
     dev: false
 
-  /@dc-basic-component/request/1.0.5:
-    resolution: {integrity: sha512-8Zb6gUb2S+NSiAhIFVTwjKdZOL+8pe/e6srJmbD+d1fflZJJfWkUTb004UHv1YHXLPNWtlRYu+RJXx5OZLQ4dQ==}
+  /@dc-basic-component/request/1.0.13:
+    resolution: {integrity: sha512-Xcs+cYMB/MsgmwnZaSEaUROU8iVd+nFYWNEC2srNTJdFgmprfAVvp/jFmlf1CAtlKFiQJLGPTjFqjISLEzEW3w==}
     engines: {node: '>=16'}
     dependencies:
-      '@dc-basic-component/config': 1.0.2
-      '@dc-basic-component/util': 1.0.5
+      '@dc-basic-component/config': 1.0.12
+      '@dc-basic-component/util': 1.0.12
       '@vueuse/core': 9.4.0_vue@3.2.41
       axios: 1.1.3
       vue: 3.2.41
@@ -510,11 +510,11 @@ packages:
       - debug
     dev: false
 
-  /@dc-basic-component/util/1.0.5:
-    resolution: {integrity: sha512-OZoSkSGBHwUQmBldbGQ05tScrjkn2ebB1o0ZMmzD2zYqdMBmEhPzjIhPlUNODwDmftJm9t0p9C1Px619G/xjog==}
+  /@dc-basic-component/util/1.0.12:
+    resolution: {integrity: sha512-sn4p2Z3IUV2S+zbESkWrMxhWk4INZXrhdILjVltuMXxz88ql/UGfa0wou2cGC5JHtBoQW2UatEgGcW34eKbmeg==}
     engines: {node: '>=16'}
     dependencies:
-      '@dc-basic-component/config': 1.0.2
+      '@dc-basic-component/config': 1.0.12
       clipboard: 2.0.11
       nanoid: 4.0.0
     dev: false

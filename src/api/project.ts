@@ -1,4 +1,4 @@
-import { GetRequestModel, PostRequestModel, PutRequestModel } from '@dc-basic-component/request'
+import { DeleteRequestModel, GetRequestModel, PostRequestModel, PutRequestModel } from '@dc-basic-component/request'
 import type { QueryType } from '@dc-basic-component/config'
 import type { ProjectVo } from '~/entity/project/project-vo'
 import type { PageModel } from '~/base/page-model'
@@ -33,6 +33,12 @@ export default {
    * @param id 主键id
    */
   getById: (id: string) => new GetRequestModel<ProjectVo>(`/opm/project/${id}`).request(),
+
+  /**
+   * 根据id删除信息
+   * @param id 主键id
+   */
+  delete: (id: string) => new DeleteRequestModel<ProjectVo>(`/opm/project/${id}`).request(),
 
   /**
    * 新增

@@ -20,10 +20,21 @@ const handleClickUpdate = (id?: string) => {
   updatePanel.title = id ? '编辑项目' : '添加项目'
 }
 
-onMounted(() => {
+const refresh = () => {
+  updatePanel.visible = false
   projectRequest.page({ rows: 10 }).then((data) => {
     projectArray.value = data.data.list
   })
+}
+
+const handleClickDelete = (id: string) => {
+  projectRequest.delete(id).then(() => {
+    refresh()
+  })
+}
+
+onMounted(() => {
+  refresh()
 })
 
 const router = useRouter()
@@ -62,12 +73,15 @@ const go = (projectId: string) => {
         <NButton quaternary @click="handleClickUpdate(item.id)">
           编辑
         </NButton>
+        <NButton type="error" quaternary @click="handleClickDelete(item.id)">
+          删除
+        </NButton>
       </template>
     </NCard>
   </div>
   <NDrawer v-model:show="updatePanel.visible" width="40%" placement="right">
     <NDrawerContent v-if="updatePanel.visible" :title="updatePanel.title" closable>
-      <UpdateProject :project-id="updatePanel.id" @cancel="updatePanel.visible = false" />
+      <UpdateProject :project-id="updatePanel.id" @cancel="updatePanel.visible = false" @refresh="refresh" />
     </NDrawerContent>
   </NDrawer>
 </template>
