@@ -1,9 +1,11 @@
 import { confirmMethod } from '@dc-basic-component/request'
 import type { RequestConfig } from '@dc-basic-component/config'
+import { getToken } from '~/util/once/token-util'
 
 export const requestConfig: RequestConfig = {
-  // 设置为合并
-  mergeType: 'merge',
+  header: () => ({
+    'opm-token': () => getToken(),
+  }),
   // 异常处理的设置
   exceptionHandleMap: () => ({
     // 00002 为需要二次确认的异常
