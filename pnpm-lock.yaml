@@ -2,9 +2,9 @@ lockfileVersion: 5.4
 
 specifiers:
   '@antfu/eslint-config': ^0.27.0
-  '@dc-basic-component/config': 1.0.17
-  '@dc-basic-component/request': 1.0.17
-  '@dc-basic-component/util': 1.0.17
+  '@dc-basic-component/config': 1.0.18
+  '@dc-basic-component/request': 1.0.19
+  '@dc-basic-component/util': 1.0.18
   '@iconify-json/carbon': ^1.1.9
   '@iconify-json/ri': ^1.1.3
   '@types/node': ^18.11.7
@@ -16,6 +16,7 @@ specifiers:
   '@vueuse/core': ^9.4.0
   eslint: ^8.26.0
   jsdom: ^20.0.1
+  jsencrypt: 3.2.1
   less: ^4.1.3
   monaco-editor: ^0.34.1
   naive-ui: ^2.33.5
@@ -35,9 +36,9 @@ specifiers:
   vue-tsc: ^1.0.9
 
 dependencies:
-  '@dc-basic-component/config': 1.0.17
-  '@dc-basic-component/request': 1.0.17
-  '@dc-basic-component/util': 1.0.17
+  '@dc-basic-component/config': 1.0.18
+  '@dc-basic-component/request': 1.0.19
+  '@dc-basic-component/util': 1.0.18
   '@vueuse/core': 9.4.0_vue@3.2.41
   vue: 3.2.41
   vue-router: 4.1.6_vue@3.2.41
@@ -54,6 +55,7 @@ devDependencies:
   '@vue/test-utils': 2.2.1_vue@3.2.41
   eslint: 8.26.0
   jsdom: 20.0.1
+  jsencrypt: 3.2.1
   less: 4.1.3
   monaco-editor: 0.34.1
   naive-ui: 2.33.5_vue@3.2.41
@@ -481,20 +483,20 @@ packages:
       vue: 3.2.41
     dev: true
 
-  /@dc-basic-component/config/1.0.17:
-    resolution: {integrity: sha512-QjAxzJLqQKpoSdWdP4qvbFK+L6M/K5lkqdCowb3rVifqD6lXo4iUZNeur+SxWxp9GAejNokZV33YIW6yCyypAw==}
+  /@dc-basic-component/config/1.0.18:
+    resolution: {integrity: sha512-QEmgszFnfk4cY541NvvbrsoM89rypO24UgOfTMHTZ7qR40YOs3mOm/J8MGbhFSiNOlwW7PlltagqTnFDkJfQRA==}
     engines: {node: '>=16'}
     dependencies:
       vue: 3.2.41
       vue-router: 4.1.6_vue@3.2.41
     dev: false
 
-  /@dc-basic-component/request/1.0.17:
-    resolution: {integrity: sha512-R424AJ96JA+ee5d50NhLCCb1m6XE1iTLfLNZIEb/cBJaU4ezYoTe3CZQBHlheJBZXlXVdJ23A8fQDVByCt81CA==}
+  /@dc-basic-component/request/1.0.19:
+    resolution: {integrity: sha512-oHvhpEL1jiQFT6YPvsk1IcVZ7SItoe7P5R6UZyHWvODItRgnNKIjLh2MvcskkZllWU0xTEhQrsp6mO6CuaEZKw==}
     engines: {node: '>=16'}
     dependencies:
-      '@dc-basic-component/config': 1.0.17
-      '@dc-basic-component/util': 1.0.17
+      '@dc-basic-component/config': 1.0.18
+      '@dc-basic-component/util': 1.0.18
       '@vueuse/core': 9.4.0_vue@3.2.41
       axios: 1.1.3
       vue: 3.2.41
@@ -503,11 +505,11 @@ packages:
       - debug
     dev: false
 
-  /@dc-basic-component/util/1.0.17:
-    resolution: {integrity: sha512-8nB4JmRR1kaoxOZGjQ6tQTDShmgfJX/iaGaA5JjScFP8pvhFV5EGzDIZUK33lVdVjedMfhbv89qKgO4lCm5sZQ==}
+  /@dc-basic-component/util/1.0.18:
+    resolution: {integrity: sha512-KW4vm1Z8dfbbOuO9CkJ3KJHw0SlrHG9c29/dgiegW9lhh+P0pwXJxbxWa8+9yfS4tcblkigwbr9a/ww2pl4Dgg==}
     engines: {node: '>=16'}
     dependencies:
-      '@dc-basic-component/config': 1.0.17
+      '@dc-basic-component/config': 1.0.18
       clipboard: 2.0.11
       nanoid: 4.0.0
     dev: false
@@ -3468,6 +3470,10 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /jsencrypt/3.2.1:
+    resolution: {integrity: sha512-k1sD5QV0KPn+D8uG9AdGzTQuamt82QZ3A3l6f7TRwMU6Oi2Vg0BsL+wZIQBONcraO1pc78ExMdvmBBJ8WhNYUA==}
     dev: true
 
   /jsesc/2.5.2:
