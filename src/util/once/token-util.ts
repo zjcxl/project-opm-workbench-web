@@ -12,3 +12,10 @@ export const getToken = () => token.value
 export const setToken = (tokenValue: string) => {
   token.value = tokenValue
 }
+
+/**
+ * 移除token信息
+ */
+export const clearToken = () => {
+  token.value = ''
+}

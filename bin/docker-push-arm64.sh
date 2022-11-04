@@ -1,6 +1,6 @@
 
 image_name=opm_workbench_web
-image_version=0.23
+image_version=0.24
 company_name=own
 repository_name=swr.cn-east-2.myhuaweicloud.com
 
