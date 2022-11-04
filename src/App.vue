@@ -2,7 +2,7 @@
 import { nextTick } from 'vue'
 import { useMessage } from '@dc-basic-component/util'
 import loginRequest from '~/api/login'
-import { getToken } from '~/util/once/token-util'
+import { clearToken, getToken } from '~/util/once/token-util'
 // 页面是否可见
 const visible = ref<boolean>(false)
 
@@ -22,10 +22,13 @@ onMounted(() => {
     }
   }).then((flag) => {
     nextTick(async () => {
-      if (flag)
+      if (flag) {
         await router.push('/')
-      else
+      }
+      else {
+        clearToken()
         await router.push('/login')
+      }
       // 显示主内容
       visible.value = true
     })
