@@ -7,12 +7,13 @@ const visible = ref<boolean>(false)
 const router = useRouter()
 onMounted(() => {
   loginRequest.check().then((data) => {
-    visible.value = true
     nextTick(() => {
       if (data.data)
         router.push('/')
       else
         router.push('/login')
+      // 显示主内容
+      visible.value = true
     })
   })
 })
