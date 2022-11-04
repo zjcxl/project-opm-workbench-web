@@ -5,8 +5,8 @@ import { JSEncrypt } from 'jsencrypt'
 import loginRequest from '~/api/login'
 import { setToken } from '~/util/once/token-util'
 
-const account = ref<string>('cxl')
-const password = ref<string>('dc3.1415926')
+const account = ref<string>('')
+const password = ref<string>('')
 
 // 是否显示密码
 const showPassword = ref<boolean>(false)
