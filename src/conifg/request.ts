@@ -1,10 +1,8 @@
 import { confirmMethod } from '@dc-basic-component/request'
 import type { RequestConfig } from '@dc-basic-component/config'
-import { getRouter } from '@dc-basic-component/config'
 import { useMessage } from '@dc-basic-component/util'
 import { getToken } from '~/util/once/token-util'
-
-const router = getRouter()
+import { getRouter } from '~/util/once/router-util'
 
 export const requestConfig: RequestConfig = {
   header: () => ({
@@ -18,7 +16,8 @@ export const requestConfig: RequestConfig = {
     'U0009': () => {
       return new Promise(() => {
         useMessage().error('登录已过期，请重新登录')
-        router.push('/login').then()
+        const router = getRouter()
+        return router.push('/login')
       })
     },
   }),

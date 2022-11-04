@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nextTick } from 'vue'
+import { useMessage } from '@dc-basic-component/util'
 import loginRequest from '~/api/login'
 import { getToken } from '~/util/once/token-util'
 // 页面是否可见
@@ -15,6 +16,7 @@ onMounted(() => {
     }
     else {
       loginRequest.check().then((data) => {
+        !data.data && useMessage().error('登录已过期，请重新登录')
         resolve(data.data)
       })
     }

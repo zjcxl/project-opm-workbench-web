@@ -5,8 +5,8 @@ import { JSEncrypt } from 'jsencrypt'
 import loginRequest from '~/api/login'
 import { setToken } from '~/util/once/token-util'
 
-const account = ref<string>('')
-const password = ref<string>('')
+const account = ref<string>('cxl')
+const password = ref<string>('dc3.1415926')
 
 // 是否显示密码
 const showPassword = ref<boolean>(false)
@@ -43,12 +43,13 @@ const handleClickLogin = async () => {
   const { data: rsaKey } = await loginRequest.rsa(key)
   const newPassword = handleRsa(password.value, rsaKey)
   // 登录请求
-  loginRequest.login(account.value, newPassword, key).then((data) => {
+  loginRequest.login(account.value, newPassword, key).then(async (data) => {
     // 设置token信息
     setToken(data.data)
+    // 显示消息
     useMessage().success('登录成功')
     // 跳转到项目页面
-    router.push('/project')
+    await router.replace('/project')
   })
 }
 </script>

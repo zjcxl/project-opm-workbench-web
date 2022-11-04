@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { defineProjectConfig, setRouter } from '@dc-basic-component/config'
+import { defineProjectConfig } from '@dc-basic-component/config'
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from 'virtual:generated-pages'
 import App from './App.vue'
@@ -9,6 +9,7 @@ import './styles/main.css'
 import 'uno.css'
 import { loadingBarConfig, messageConfig } from '~/conifg/message'
 import { requestConfig } from '~/conifg/request'
+import { setRouter } from '~/util/once/router-util'
 
 const app = createApp(App)
 const router = createRouter({
