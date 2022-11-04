@@ -1,10 +1,11 @@
-import type { MessageUtilConfig } from '@dc-basic-component/config'
+import type { LoadingBarConfig, MessageUtilConfig } from '@dc-basic-component/config'
 import { createDiscreteApi } from 'naive-ui'
 
 const {
   message: messageUtil,
   dialog: dialogUtil,
-} = createDiscreteApi(['message', 'dialog'])
+  loadingBar: loadingBarUtil,
+} = createDiscreteApi(['message', 'dialog', 'loadingBar'])
 
 /**
  * 信息配置
@@ -51,5 +52,35 @@ export const messageConfig: MessageUtilConfig<string, void> = {
         title: '确认信息',
       })
     },
+  },
+}
+
+/**
+ * 加载条配置
+ */
+export const loadingBarConfig: LoadingBarConfig = {
+  /**
+   * 加载开始
+   */
+  start(): void {
+    loadingBarUtil.start()
+  },
+  /**
+   * 加载结束
+   */
+  finish(): void {
+    loadingBarUtil.finish()
+  },
+  /**
+   * 加载成功
+   */
+  success(): void {
+    loadingBarUtil.finish()
+  },
+  /**
+   * 加载失败
+   */
+  error(): void {
+    loadingBarUtil.error()
   },
 }

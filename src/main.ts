@@ -7,7 +7,7 @@ import App from './App.vue'
 import './styles/reset.css'
 import './styles/main.css'
 import 'uno.css'
-import { messageConfig } from '~/conifg/message'
+import { loadingBarConfig, messageConfig } from '~/conifg/message'
 import { requestConfig } from '~/conifg/request'
 
 const app = createApp(App)
@@ -23,6 +23,8 @@ defineProjectConfig({
   request: requestConfig,
   // 消息工具配置
   message: messageConfig,
+  // 加载条配置
+  loading: loadingBarConfig,
 })
 
 setRouter(router)
