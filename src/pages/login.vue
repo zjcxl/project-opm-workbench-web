@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NANOID, useMessage } from '@dc-basic-component/util'
+import { NANOID, copyText, useMessage } from '@dc-basic-component/util'
 import { JSEncrypt } from 'jsencrypt'
 import loginRequest from '~/api/login'
 import { setToken } from '~/util/once/token-util'
@@ -52,6 +52,16 @@ const handleClickLogin = async () => {
     await router.replace('/project')
   })
 }
+
+/**
+ * 点击邮箱事件
+ * @param text 邮箱地址
+ */
+const handleClickEmail = (text: string) => {
+  copyText(text)
+  // 显示消息
+  useMessage().success('邮箱已复制到剪切板')
+}
 </script>
 
 <template>
@@ -60,7 +70,7 @@ const handleClickLogin = async () => {
       <div class="login">
         <div class="hero">
           <h1>Sign In to<br> Open the World</h1>
-          <p>If you don't have an account, <br> you can contact <a href="#">zjphchenxueli@gmail.com</a></p>
+          <p>If you don't have an account, <br> you can contact <a href="#" @click="handleClickEmail('zjphchenxueli@gmail.com')">zjphchenxueli@gmail.com</a></p>
         </div>
         <div class="main">
           <div class="form">
