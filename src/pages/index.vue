@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const router = useRouter()
 onMounted(() => {
-  router.push('/project')
+  nextTick(() => {
+    router.push('/project')
+  })
 })
 </script>
 
