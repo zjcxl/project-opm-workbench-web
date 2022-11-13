@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { nextTick } from 'vue'
-import { useMessage } from '@dc-basic-component/util'
+import { NANOID } from '@dc-basic-component/util'
 import loginRequest from '~/api/login'
-import { clearToken, getToken } from '~/util/once/token-util'
+import { clearToken, getAutoToken, getToken, setToken } from '~/util/once/token-util'
+import { handleRsa } from '~/util/once/rsa-util'
 // 页面是否可见
 const visible = ref<boolean>(false)
 
@@ -15,9 +16,30 @@ onMounted(() => {
       resolve(false)
     }
     else {
-      loginRequest.check().then((data) => {
-        !data.data && useMessage().error('登录已过期，请重新登录')
-        resolve(data.data)
+      loginRequest.check().then(async (data) => {
+        const flag = data.data
+        if (flag) {
+          resolve(true)
+        }
+        else {
+          // 设置自动登录信息
+          const autoToken = getAutoToken()
+          if (autoToken) {
+            // 执行自动登录
+            const key = NANOID(16)
+            // 加密密码
+            const { data: rsaKey } = await loginRequest.rsa(key)
+            const newPassword = handleRsa(autoToken, rsaKey)
+            return await loginRequest.autoLogin(newPassword, key).then((data) => {
+              // 设置登录后的信息
+              setToken(data.data)
+              resolve(true)
+            })
+          }
+          else {
+            resolve(false)
+          }
+        }
       })
     }
   }).then((flag) => {
