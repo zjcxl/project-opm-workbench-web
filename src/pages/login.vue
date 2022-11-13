@@ -66,6 +66,11 @@ const handleClickEmail = (text: string) => {
 
 <template>
   <div class="login-container site">
+    <!--    <div style="position: absolute;top: 10px;right: 10px;"> -->
+    <!--      <button class="icon-btn mx-2 !outline-none" @click="toggleDark()"> -->
+    <!--        <div i="carbon-sun dark:carbon-moon" /> -->
+    <!--      </button> -->
+    <!--    </div> -->
     <div class="container">
       <div class="login">
         <div class="hero">
