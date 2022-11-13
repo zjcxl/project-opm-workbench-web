@@ -56,9 +56,6 @@ const submit = () => {
 onMounted(() => {
   getById()
 })
-
-// eslint-disable-next-line no-console
-console.log(props.projectId)
 </script>
 
 <template>

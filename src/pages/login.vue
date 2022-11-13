@@ -3,7 +3,8 @@ import { ref } from 'vue'
 import { NANOID, copyText, useMessage } from '@dc-basic-component/util'
 import { JSEncrypt } from 'jsencrypt'
 import loginRequest from '~/api/login'
-import { setToken } from '~/util/once/token-util'
+import { setAutoToken, setToken } from '~/util/once/token-util'
+import { handleRsa } from '~/util/once/rsa-util'
 
 const account = ref<string>('')
 const password = ref<string>('')
@@ -12,18 +13,6 @@ const password = ref<string>('')
 const showPassword = ref<boolean>(false)
 
 const router = useRouter()
-
-/**
- * 加密数据
- * @param content 要加密的内容
- * @param publicKey 公钥
- * @returns {string}
- */
-const handleRsa = (content: string, publicKey: string): string => {
-  const encrypt = new JSEncrypt({})
-  encrypt.setPublicKey(publicKey)
-  return encrypt.encrypt(content) || ''
-}
 
 /**
  * 点击登录后的操作
@@ -37,20 +26,24 @@ const handleClickLogin = async () => {
     useMessage().error('请输入密码')
     return
   }
-  useMessage().warning('登录环境监测中...')
+  useMessage().warning('登录环境检测完中...')
   const key = NANOID(16)
   // 加密密码
   const { data: rsaKey } = await loginRequest.rsa(key)
   const newPassword = handleRsa(password.value, rsaKey)
   // 登录请求
-  loginRequest.login(account.value, newPassword, key).then(async (data) => {
+  await loginRequest.login(account.value, newPassword, key).then(async (data) => {
     // 设置token信息
     setToken(data.data)
     // 显示消息
     useMessage().success('登录成功')
-    // 跳转到项目页面
-    await router.replace('/project')
   })
+  // 设置自动登录的信息
+  const autoLoginKey = await loginRequest.getAutoLoginKey()
+  // 将key存入缓存
+  setAutoToken(autoLoginKey.data)
+  // 跳转到项目页面
+  await router.replace('/project')
 }
 
 /**
