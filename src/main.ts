@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createSSRApp } from 'vue'
 import { defineProjectConfig } from '@dc-basic-component/config'
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from 'virtual:generated-pages'
@@ -11,7 +11,7 @@ import { loadingBarConfig, messageConfig } from '~/conifg/message'
 import { requestConfig } from '~/conifg/request'
 import { setRouter } from '~/util/once/router-util'
 
-const app = createApp(App)
+const app = createSSRApp(App)
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
