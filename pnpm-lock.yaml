@@ -2,9 +2,9 @@ lockfileVersion: 5.4
 
 specifiers:
   '@antfu/eslint-config': ^0.34.0
-  '@dc-basic-component/config': ^1.1.5
-  '@dc-basic-component/request': ^1.1.5
-  '@dc-basic-component/util': ^1.1.5
+  '@dc-basic-component/config': ^1.1.8
+  '@dc-basic-component/request': ^1.1.8
+  '@dc-basic-component/util': ^1.1.8
   '@iconify-json/carbon': ^1.1.11
   '@iconify-json/ri': ^1.1.4
   '@types/node': ^18.11.16
@@ -36,9 +36,9 @@ specifiers:
   vue-tsc: ^1.0.13
 
 dependencies:
-  '@dc-basic-component/config': 1.1.5
-  '@dc-basic-component/request': 1.1.5
-  '@dc-basic-component/util': 1.1.5
+  '@dc-basic-component/config': 1.1.8
+  '@dc-basic-component/request': 1.1.8
+  '@dc-basic-component/util': 1.1.8
   '@vueuse/core': 9.7.0_vue@3.2.45
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
@@ -487,19 +487,19 @@ packages:
       vue: 3.2.45
     dev: true
 
-  /@dc-basic-component/config/1.1.5:
-    resolution: {integrity: sha512-ieIAiX/5l13XyuWHeKO3nIs6izmT6d/Cg1uyLw4sLRH8N2/+4F2ZwsLzMtdC9qjT+zbzqfXE5/vh45yPEJhZxA==}
+  /@dc-basic-component/config/1.1.8:
+    resolution: {integrity: sha512-+i8/DrROJaP97bjj/pfx1bQYjYyHtankoWTkBCjGDkGM15A6oJU3LaWkHHC5CgpenyEcRsi1S99kcjwsyltL1Q==}
     engines: {node: '>=16'}
     dependencies:
       vue: 3.2.45
     dev: false
 
-  /@dc-basic-component/request/1.1.5:
-    resolution: {integrity: sha512-8ZRBXO7YeTepgw5OUSsX9EP4Hb9xKQ16yJN+AOR+ms/xp5Vg1lmwc459PtpxZdGkGIGX8aVT72NUgC5IkkCDPQ==}
+  /@dc-basic-component/request/1.1.8:
+    resolution: {integrity: sha512-tXK7nSTJiwRFFH9Ts/DeeMILuTAlS70XVlMH23yuzVm3kwrfJlHVvK0AG74mhBqeDv+hzlUZA3HqFUfg+Yurnw==}
     engines: {node: '>=16'}
     dependencies:
-      '@dc-basic-component/config': 1.1.5
-      '@dc-basic-component/util': 1.1.5
+      '@dc-basic-component/config': 1.1.8
+      '@dc-basic-component/util': 1.1.8
       '@vueuse/core': 9.7.0_vue@3.2.45
       axios: 1.2.1
       vue: 3.2.45
@@ -508,11 +508,11 @@ packages:
       - debug
     dev: false
 
-  /@dc-basic-component/util/1.1.5:
-    resolution: {integrity: sha512-lLv3QftNi2WjykkXBNkK0cHk4cKMDcT6tyrtsGg7uti6a6aH9KH+gSQWXaeLVfts6aRWe7sWCZYXt16ayqOqVA==}
+  /@dc-basic-component/util/1.1.8:
+    resolution: {integrity: sha512-vnjmzLhwWNQol1z5DF6/GwMJMN3NE+hVkD763xqRncYmfBM3clVtysnIsBH4g3UpECvMdrVhZ0VAZimehEwfzw==}
     engines: {node: '>=16'}
     dependencies:
-      '@dc-basic-component/config': 1.1.5
+      '@dc-basic-component/config': 1.1.8
       clipboard: 2.0.11
       nanoid: 4.0.0
     dev: false

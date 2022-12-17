@@ -11,9 +11,9 @@
     "up": "taze major -I"
   },
   "dependencies": {
-    "@dc-basic-component/config": "^1.1.5",
-    "@dc-basic-component/request": "^1.1.5",
-    "@dc-basic-component/util": "^1.1.5",
+    "@dc-basic-component/config": "^1.1.8",
+    "@dc-basic-component/request": "^1.1.8",
+    "@dc-basic-component/util": "^1.1.8",
     "@vueuse/core": "^9.7.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"

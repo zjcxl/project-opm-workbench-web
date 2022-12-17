@@ -1,4 +1,10 @@
-import { DeleteRequestModel, GetRequestModel, PostRequestModel, PutRequestModel } from '@dc-basic-component/request'
+import {
+  DeleteRequestModel,
+  GetRequestModel,
+  PostRequestCacheModel,
+  PostRequestModel,
+  PutRequestModel,
+} from '@dc-basic-component/request'
 import type { QueryType } from '@dc-basic-component/config'
 import type { ProjectVo } from '~/entity/project/project-vo'
 import type { PageModel } from '~/base/page-model'
@@ -14,19 +20,19 @@ export default {
    * 获取所有的信息
    * @param query 查询条件
    */
-  all: (query: QueryType) => new PostRequestModel<Array<ProjectVo>>('/opm/project/all', query).request(),
+  all: (query: QueryType) => new PostRequestCacheModel<Array<ProjectVo>>('/opm/project/all', query).request(),
 
   /**
    * 获取所有的信息
    * @param query 查询条件
    */
-  page: (query: QueryType) => new PostRequestModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
+  page: (query: QueryType) => new PostRequestCacheModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
 
   /**
    * map获取所有的信息
    * @param query 查询条件
    */
-  map: (query?: QueryType) => new PostRequestModel<Array<ProjectMapVo>>('/opm/project/map', query).request(),
+  map: (query?: QueryType) => new PostRequestCacheModel<Array<ProjectMapVo>>('/opm/project/map', query).request(),
 
   /**
    * 根据id获取信息
@@ -79,13 +85,13 @@ export default {
       sql: string
       templateId: string
     }>,
-  ) => new PostRequestModel<Array<VariableModel>>(`/opm/project/keys/${projectId}`, params).request(),
+  ) => new PostRequestCacheModel<Array<VariableModel>>(`/opm/project/keys/${projectId}`, params).request(),
 
   /**
    * 获取所有的schema
    * @param projectId 项目id
    * @param templateId 模板id
    */
-  schema: (projectId: string, templateId?: string) => new PostRequestModel<Array<TableSchemaVo>>(`/opm/project/schema/${projectId}`, { templateId }).request(),
+  schema: (projectId: string, templateId?: string) => new PostRequestCacheModel<Array<TableSchemaVo>>(`/opm/project/schema/${projectId}`, { templateId }).request(),
 
 }
