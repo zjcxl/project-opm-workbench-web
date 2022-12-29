@@ -1,5 +1,6 @@
 import { createSSRApp } from 'vue'
 import { defineProjectConfig } from '@dc-basic-component/config'
+import { axiosRequestMethod } from '@dc-basic-component/request-axios'
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from 'virtual:generated-pages'
 import App from './App.vue'
@@ -20,6 +21,8 @@ const router = createRouter({
 // 设置请求信息
 defineProjectConfig({
   baseUrl: '/api',
+  // 请求工具
+  requestMethod: axiosRequestMethod,
   // 请求工具配置
   request: requestConfig,
   // 消息工具配置

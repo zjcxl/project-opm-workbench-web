@@ -118,8 +118,8 @@ onMounted(() => {
             取消全部
           </NButton>
           <NDivider vertical />
-          <NButton strong secondary type="primary" :disabled="checkedSchemaArray.length === 0" @click="generate">
-            生成代码
+          <NButton strong secondary type="primary" :disabled="!generating && checkedSchemaArray.length === 0" @click="generate">
+            {{ generating ? '生成中...' : '生成代码' }}
           </NButton>
         </NSpace>
       </NGridItem>

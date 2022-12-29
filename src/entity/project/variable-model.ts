@@ -4,7 +4,7 @@ export interface VariableModel {
   // 来源
   origin: string
   // 类型
-  type: string
+  type: 'value' | 'list'
   // 示例值
   value: string
   // 是否显示来源

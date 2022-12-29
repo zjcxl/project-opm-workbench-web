@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { NANOID, copyText, useMessage } from '@dc-basic-component/util'
-import { JSEncrypt } from 'jsencrypt'
 import loginRequest from '~/api/login'
 import { setAutoToken, setToken } from '~/util/once/token-util'
 import { handleRsa } from '~/util/once/rsa-util'
@@ -68,7 +67,12 @@ const handleClickEmail = (text: string) => {
       <div class="login">
         <div class="hero">
           <h1>Sign In to<br> Open the World</h1>
-          <p>If you don't have an account, <br> you can contact <a href="#" @click="handleClickEmail('zjphchenxueli@gmail.com')">zjphchenxueli@gmail.com</a></p>
+          <p>
+            If you don't have an account, <br> you can contact <a
+              href="#"
+              @click="handleClickEmail('zjphchenxueli@gmail.com')"
+            >zjphchenxueli@gmail.com</a>
+          </p>
         </div>
         <div class="main">
           <div class="form">
@@ -76,7 +80,10 @@ const handleClickEmail = (text: string) => {
               <input v-model="account" type="email" placeholder="Press Your Account" @keydown.enter="handleClickLogin">
             </p>
             <p class="password">
-              <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Press Your Password" @keydown.enter="handleClickLogin">
+              <input
+                v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Press Your Password"
+                @keydown.enter="handleClickLogin"
+              >
               <i v-if="!showPassword" class="i-ri-eye-off-line" @click="showPassword = true" />
               <i v-else class="i-ri-eye-line" @click="showPassword = false" />
               <!--              <a href="#">Recovery password</a> -->

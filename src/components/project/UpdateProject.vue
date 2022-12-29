@@ -12,8 +12,6 @@ const props = defineProps<PropsState>()
 
 const emit = defineEmits<{ (e: 'cancel'): void; (e: 'refresh'): void }>()
 
-// 是否是添加
-const isAdd = computed(() => !props.projectId)
 // 是否显示表单
 const visible = ref<boolean>(false)
 

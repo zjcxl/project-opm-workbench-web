@@ -89,7 +89,8 @@ onMounted(() => {
         <NTag
           v-if="item.type"
           :type="colorRecord[item.type] || 'info'"
-          size="small" :bordered="false"
+          size="small"
+          :bordered="false"
           strong
           round
           w-50px

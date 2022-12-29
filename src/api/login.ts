@@ -16,7 +16,8 @@ export default {
    * 验证是否登录
    */
   check: () => {
-    return new GetRequestModel<boolean>('/login/check').request()
+    const r = new GetRequestModel<boolean>('/login/check')
+    return r.request()
   },
 
   /**
