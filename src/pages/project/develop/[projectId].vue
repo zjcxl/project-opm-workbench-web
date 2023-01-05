@@ -19,6 +19,7 @@ import type { ProjectMapVo } from '~/entity/project/project-map-vo'
 import type { ProjectDevelopMapVo } from '~/entity/project/project-develop-map-vo'
 import type { TemplateMapVo } from '~/entity/project/template-map-vo'
 import TableSchemaExport from '~/components/project/TableSchemaExport.vue'
+import GenerateHistoryTable from '~/components/project/generate-history-table/GenerateHistoryTable.vue'
 import TableSqlExport from '~/components/project/TableSqlExport.vue'
 
 const props = defineProps<{ projectId: string }>()
@@ -38,6 +39,8 @@ const selectDevelopId = ref<string>()
 const selectTemplateId = ref<string>()
 // 建表sql输入抽屉开关
 const drawerVisible = ref<boolean>(false)
+// 生成历史抽屉开关
+const historyVisible = ref<boolean>(false)
 // 文件树列表
 const fileManageTreeList = ref<Array<TreeOption>>([])
 // 是否显示文件管理内容
@@ -261,6 +264,10 @@ onMounted(() => {
       <NButton strong secondary type="success" :disabled="!canExportButton" @click="drawerVisible = true">
         建表SQL生成代码
       </NButton>
+      <NButton strong secondary type="success" @click="historyVisible = true">
+        <i i-carbon-time mr-1 />
+        生成历史记录
+      </NButton>
     </template>
   </FileManage>
   <!-- 选择数据表生成的面板 -->
@@ -270,5 +277,9 @@ onMounted(() => {
   <!-- 使用建表sql生成的面板 -->
   <NDrawer v-model:show="drawerVisible" width="90%" placement="right">
     <TableSqlExport v-if="drawerVisible" :project-id="props.projectId" :template-id="selectTemplateId" />
+  </NDrawer>
+  <!-- 生成历史记录 -->
+  <NDrawer v-model:show="historyVisible" width="90%" placement="right">
+    <GenerateHistoryTable v-if="historyVisible" :project-id="props.projectId" :template-id="selectTemplateId" />
   </NDrawer>
 </template>

@@ -13,13 +13,13 @@ export default {
   all: (query: QueryType) => new PostRequestCacheModel<Array<ProjectDevelopVo>>('/opm/project/develop/all', query).request(),
 
   /**
-   * 获取所有的信息
+   * 分页查询数据
    * @param query 查询条件
    */
   page: (query: QueryType) => new PostRequestCacheModel<PageModel<ProjectDevelopVo>>('/opm/project/develop/page', query).request(),
 
   /**
-   * 获取所有的信息
+   * map查询数据
    * @param query 查询条件
    */
   map: (query: QueryType) => new PostRequestCacheModel<Array<ProjectDevelopMapVo>>('/opm/project/develop/map', query).request(),
