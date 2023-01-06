@@ -265,8 +265,10 @@ onMounted(() => {
         建表SQL生成代码
       </NButton>
       <NButton strong secondary type="success" @click="historyVisible = true">
-        <i i-carbon-time mr-1 />
         生成历史记录
+        <template #icon>
+          <i i-carbon-time />
+        </template>
       </NButton>
     </template>
   </FileManage>
