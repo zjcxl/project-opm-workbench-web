@@ -10,11 +10,8 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
     title: '序号',
     key: 'no',
     width: 80,
+    align: 'center',
     render: (row, index) => index + 1,
-  },
-  {
-    title: '标题',
-    key: 'name',
   },
   {
     title: '方式',
@@ -31,13 +28,30 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
   {
     title: '文件数',
     key: 'fileCount',
-    width: 160,
+    width: 100,
     align: 'center',
+  },
+  {
+    title: '项目链',
+    key: 'no',
+    render: (row) => {
+      return [row.project.name, row.template.name, row.develop.name].filter(item => item).join(' > ')
+    },
+  },
+  {
+    title: '标题',
+    key: 'name',
   },
   {
     title: '生成时间',
     key: 'gmtCreate',
-    width: 160,
+    width: 165,
+    align: 'center',
+  },
+  {
+    title: '生成人',
+    key: 'createUserName',
+    width: 165,
     align: 'center',
   },
   {
@@ -48,11 +62,13 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
     render(row) {
       // 获取文件的属性信息
       const fileId = row.fileId
-
-      return h(NSpace, {}, {
+      return h(NSpace, {
+        justify: 'space-around',
+      }, {
         default: () => [
           h(NButton, {
-            quaternary: true,
+            text: true,
+            tag: 'a',
             type: 'primary',
             onClick: () => {
               fileRecordRequest.getById(fileId).then((data) => {
