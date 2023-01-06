@@ -45,7 +45,7 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
   {
     title: '生成时间',
     key: 'gmtCreate',
-    width: 165,
+    width: 180,
     align: 'center',
   },
   {

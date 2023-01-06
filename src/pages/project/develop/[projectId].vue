@@ -2,7 +2,7 @@
 import type { TreeOption } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import { useMessage } from '@dc-basic-component/util'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import FileManage from '../../../components/file-manage/FileManage.vue'
 import projectRequest from '~/api/project'
 import projectDevelopRequest from '~/api/project-develop'
@@ -280,6 +280,6 @@ onMounted(() => {
   </NDrawer>
   <!-- 生成历史记录 -->
   <NDrawer v-model:show="historyVisible" width="90%" placement="right">
-    <GenerateHistoryTable v-if="historyVisible" :project-id="props.projectId" :template-id="selectTemplateId" />
+    <GenerateHistoryTable v-if="historyVisible" :project-id="props.projectId" :template-id="selectTemplateId" :title="projectInfo ? `项目【${projectInfo.name}】的生成记录` : ''" />
   </NDrawer>
 </template>

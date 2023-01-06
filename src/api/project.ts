@@ -26,7 +26,7 @@ export default {
    * 获取所有的信息
    * @param query 查询条件
    */
-  page: (query: QueryType) => new PostRequestCacheModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
+  page: (query: QueryType) => new PostRequestModel<PageModel<ProjectVo>>('/opm/project/page', query).request(),
 
   /**
    * map获取所有的信息

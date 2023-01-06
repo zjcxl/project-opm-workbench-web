@@ -5,18 +5,22 @@ import projectGenerateHistoryRequest from '~/api/project-generate-history'
 import type { ProjectGenerateHistoryVo } from '~/entity/project/project-generate-history-vo'
 
 interface PropsState {
-  projectId: string
+  projectId?: string
   templateId?: string
+  title?: string
 }
 
-const props = defineProps<PropsState>()
+const props = withDefaults(defineProps<PropsState>(), {
+  title: '生成历史',
+})
+// 数据列表
 const dataList = ref<Array<ProjectGenerateHistoryVo>>([])
 
 onMounted(() => {
   projectGenerateHistoryRequest.page({
     projectId: props.projectId,
     templateId: props.templateId,
-    rows: 50,
+    rows: 30,
   }).then((data) => {
     dataList.value = data.data.list
   })
@@ -24,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <NDrawerContent title="生成历史">
+  <NDrawerContent v-once :title="props.title">
     <n-data-table
       :columns="columns"
       :data="dataList"

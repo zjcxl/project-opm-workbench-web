@@ -47,7 +47,6 @@ export const requestConfig: RequestConfig = {
     // 自动登录异常处理
     'U0010': () => {
       return new Promise(() => {
-        // 执行重新登录
         // 再次发送请求信息
         useMessage().error('登录已过期，请重新登录')
         // 清除原有的token信息

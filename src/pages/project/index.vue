@@ -14,6 +14,16 @@ const updatePanel = reactive<{
   title: '',
 })
 
+const historyPanel = reactive<{
+  id: string
+  visible: boolean
+  title: string
+}>({
+  id: '',
+  visible: false,
+  title: '',
+})
+
 const handleClickUpdate = (id?: string) => {
   updatePanel.id = id
   updatePanel.visible = true
@@ -31,6 +41,12 @@ const handleClickDelete = (id: string) => {
   projectRequest.delete(id).then(() => {
     refresh()
   })
+}
+
+const handleClickGenerateHistory = (project: ProjectVo) => {
+  historyPanel.id = project.id
+  historyPanel.visible = true
+  historyPanel.title = `项目【${project.name}】的生成记录`
 }
 
 onMounted(() => {
@@ -76,13 +92,21 @@ const go = (projectId: string) => {
         <NButton type="error" quaternary @click="handleClickDelete(item.id)">
           删除
         </NButton>
+        <NButton quaternary @click="handleClickGenerateHistory(item)">
+          生成记录
+        </NButton>
       </template>
     </NCard>
   </div>
+  <!-- 新增修改页面 -->
   <NDrawer v-model:show="updatePanel.visible" width="40%" placement="right">
     <NDrawerContent v-if="updatePanel.visible" :title="updatePanel.title" closable>
       <UpdateProject :project-id="updatePanel.id" @cancel="updatePanel.visible = false" @refresh="refresh" />
     </NDrawerContent>
+  </NDrawer>
+  <!-- 生成历史记录 -->
+  <NDrawer v-model:show="historyPanel.visible" width="90%" placement="right">
+    <GenerateHistoryTable v-if="historyPanel.visible" :project-id="historyPanel.id" :title="historyPanel.title" />
   </NDrawer>
 </template>
 
