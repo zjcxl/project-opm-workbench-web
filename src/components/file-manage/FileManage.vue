@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, nextTick, ref } from 'vue'
+import { computed, h, nextTick, ref } from 'vue'
 import type { TreeOption } from 'naive-ui'
 import { ChevronForward } from '@vicons/ionicons5'
 import type { ResultModel } from '@dc-basic-component/config'
@@ -260,4 +260,3 @@ onMounted(() => {
   grid-template-columns: 40px v-bind(fileContainerWidthComputed) 10px 1fr;
 }
 </style>
-

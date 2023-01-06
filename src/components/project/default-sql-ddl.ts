@@ -44,5 +44,5 @@ create table if not exists system_user_info
     version          int        default 0                 null comment '数据版本号'
 ) comment '系统用户基本信息表' charset = utf8mb4;
 
-create index fk_user_id on system_user_info (fk_user_id);
+create index idx_user on system_user_info (fk_user_id);
 `

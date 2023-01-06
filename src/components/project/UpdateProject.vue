@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { defineEmits, defineProps, reactive, ref } from 'vue'
 import { useMessage } from '@dc-basic-component/util'
 import type { ProjectDto } from '~/entity/project/project-dto'
 import projectRequest from '~/api/project'

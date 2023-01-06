@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, defineProps, ref } from 'vue'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
 import projectRequest from '~/api/project'
 import type { TableSchemaVo } from '~/entity/project/table-schema-vo'

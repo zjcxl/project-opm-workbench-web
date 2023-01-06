@@ -12,7 +12,7 @@ export const requestConfig: RequestConfig = {
   }),
   // 异常处理的设置
   exceptionHandleMap: () => ({
-    // 00002 为需要二次确认的异常
+    // 00002 需要二次确认的异常
     '00002': confirmMethod,
     // 未登录处理（执行自动登录）
     'U0009': async (res: ResultModel, model: BaseRequestModel<any, ResultModel>) => {

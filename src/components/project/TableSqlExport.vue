@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { downloadFile, useMessage } from '@dc-basic-component/util'
-import { ref } from 'vue'
+import { defineProps, ref } from 'vue'
 import defaultSql from './default-sql-ddl'
 import projectRequest from '~/api/project'
 import MonacoEditor from '~/components/editor/MonacoEditor.vue'
