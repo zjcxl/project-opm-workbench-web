@@ -32,6 +32,7 @@ onMounted(() => {
     <n-data-table
       :columns="columns"
       :data="dataList"
+      :row-key="row => row.id"
       :pagination="false"
       :bordered="false"
     />

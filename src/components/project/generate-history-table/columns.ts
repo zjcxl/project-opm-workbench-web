@@ -1,17 +1,23 @@
 import { NButton, NSpace, NTag } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { downloadFile, useMessage } from '@dc-basic-component/util'
+import GenerateHistoryTableDetail from './GenerateHistoryTableDetail.vue'
 import type { ProjectGenerateHistoryVo } from '~/entity/project/project-generate-history-vo'
 
 import fileRecordRequest from '~/api/file-record'
 
 export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
   {
-    title: '序号',
-    key: 'no',
-    width: 80,
+    title: '#',
+    key: 'key',
+    width: 60,
     align: 'center',
-    render: (row, index) => index + 1,
+    render: (_, index) => index + 1,
+  },
+  {
+    type: 'expand',
+    expandable: row => row.fileCount > 0,
+    renderExpand: row => h(GenerateHistoryTableDetail, { historyId: row.id }),
   },
   {
     title: '方式',
