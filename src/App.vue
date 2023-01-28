@@ -45,7 +45,7 @@ onMounted(() => {
   }).then((flag) => {
     nextTick(async () => {
       if (flag) {
-        await router.push('/')
+        await router.push('/project')
       }
       else {
         clearToken()
@@ -59,7 +59,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main font-sans p="x-4 y-20px" h-100vh text="gray-700 dark:gray-200" overflow-hidden>
+  <div font-sans h-100vh text="gray-700 dark:gray-200" overflow-hidden>
     <router-view v-if="visible" />
-  </main>
+  </div>
 </template>

@@ -1,4 +1,5 @@
-import { GetRequestModel, PostRequestModel } from '@dc-basic-component/request'
+import { DeleteRequestModel, GetRequestModel, PostRequestModel } from '@dc-basic-component/request'
+import type { UserInfoVo } from '~/entity/system/user-info-vo'
 
 export default {
 
@@ -11,6 +12,16 @@ export default {
   login: (account: string, password: string, key?: string) => {
     return new PostRequestModel<string>('/login/', { account, password, key, clientId: 'web' }).request()
   },
+
+  /**
+   * 退出登录
+   */
+  loginOut: () => new DeleteRequestModel('/login/').request(),
+
+  /**
+   * 获取当前登录用户的信息
+   */
+  info: () => new GetRequestModel<UserInfoVo>('/login/').request(),
 
   /**
    * 验证是否登录

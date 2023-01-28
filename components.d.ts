@@ -7,10 +7,14 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Avatar: typeof import('./src/components/layout/Avatar.vue')['default']
     CopyListManage: typeof import('./src/components/file-manage/CopyListManage.vue')['default']
     FileManage: typeof import('./src/components/file-manage/FileManage.vue')['default']
     GenerateHistoryTable: typeof import('./src/components/project/generate-history-table/GenerateHistoryTable.vue')['default']
     GenerateHistoryTableDetail: typeof import('./src/components/project/generate-history-table/GenerateHistoryTableDetail.vue')['default']
+    Header: typeof import('./src/components/layout/Header.vue')['default']
+    Home: typeof import('./src/components/layout/Home.vue')['default']
+    Login: typeof import('./src/components/login/Login.vue')['default']
     MonacoEditor: typeof import('./src/components/editor/MonacoEditor.vue')['default']
     NBreadcrumb: typeof import('naive-ui')['NBreadcrumb']
     NBreadcrumbItem: typeof import('naive-ui')['NBreadcrumbItem']

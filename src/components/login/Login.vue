@@ -115,5 +115,5 @@ const handleClickEmail = (text: string) => {
 </template>
 
 <style scoped lang="less">
-@import "../assets/login.less";
+@import "login.less";
 </style>
