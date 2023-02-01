@@ -7,6 +7,7 @@ import { clearAutoToken, clearToken } from '~/util/once/token-util'
 
 const userStore = useUserStore()
 const userName = computed<string>(() => userStore.userName())
+const avatar = computed<string>(() => userStore.avatar())
 
 const options = [
   {
@@ -44,7 +45,7 @@ const handleSelect = (key: string | number) => {
       <NAvatar
         round
         size="small"
-        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+        :src="avatar || 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'"
       />
     </div>
   </n-dropdown>

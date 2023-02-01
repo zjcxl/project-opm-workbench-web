@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import Avatar from './Avatar.vue'
+import logo from '~/assets/logo.png'
 </script>
 
 <template>
   <div class="opm-header">
-    <div>logo</div>
+    <div class="logo">
+      <img :src="logo">
+    </div>
     <div />
     <Avatar class="opm-avatar" />
   </div>
