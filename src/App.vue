@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { nextTick } from 'vue'
 import { NANOID } from '@dc-basic-component/util'
+import { NConfigProvider, dateZhCN, zhCN } from 'naive-ui'
 import loginRequest from '~/api/login'
 import { clearToken, getAutoToken, getToken, setToken } from '~/util/once/token-util'
 import { handleRsa } from '~/util/once/rsa-util'
+
 // 页面是否可见
 const visible = ref<boolean>(false)
 
@@ -59,7 +61,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div font-sans h-100vh text="gray-700 dark:gray-200" overflow-hidden>
-    <router-view v-if="visible" />
-  </div>
+  <NConfigProvider :locale="zhCN" :date-locale="dateZhCN">
+    <div font-sans h-100vh text="gray-700 dark:gray-200" overflow-hidden>
+      <router-view v-if="visible" />
+    </div>
+  </NConfigProvider>
 </template>

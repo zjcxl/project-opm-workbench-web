@@ -75,6 +75,7 @@ onMounted(() => {
 <template>
   <div v-if="visibleTree" max-h-2xl overflow-y-auto>
     <NTree
+      v-once
       style="width: 100%;"
       block-line
       :data="tree"
