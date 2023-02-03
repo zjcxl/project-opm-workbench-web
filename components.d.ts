@@ -43,6 +43,8 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     TableSchemaExport: typeof import('./src/components/project/TableSchemaExport.vue')['default']
     TableSqlExport: typeof import('./src/components/project/TableSqlExport.vue')['default']
+    UpdateDatabaseForm: typeof import('./src/components/project/database/UpdateDatabaseForm.vue')['default']
+    UpdateDatebaseForm: typeof import('./src/components/project/database/UpdateDatebaseForm.vue')['default']
     UpdateProject: typeof import('./src/components/project/UpdateProject.vue')['default']
   }
 }

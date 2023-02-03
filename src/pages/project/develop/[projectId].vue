@@ -21,6 +21,7 @@ import type { TemplateMapVo } from '~/entity/project/template-map-vo'
 import TableSchemaExport from '~/components/project/TableSchemaExport.vue'
 import GenerateHistoryTable from '~/components/project/generate-history-table/GenerateHistoryTable.vue'
 import TableSqlExport from '~/components/project/TableSqlExport.vue'
+import UpdateDatabaseForm from '~/components/project/database/UpdateDatabaseForm.vue'
 
 const props = defineProps<{ projectId: string }>()
 
@@ -41,6 +42,8 @@ const selectTemplateId = ref<string>()
 const drawerVisible = ref<boolean>(false)
 // 生成历史抽屉开关
 const historyVisible = ref<boolean>(false)
+// 数据库配置抽屉开关
+const databaseVisible = ref<boolean>(false)
 // 文件树列表
 const fileManageTreeList = ref<Array<TreeOption>>([])
 // 是否显示文件管理内容
@@ -270,6 +273,12 @@ onMounted(() => {
           <i i-carbon-time />
         </template>
       </NButton>
+      <NButton strong secondary type="success" @click="databaseVisible = true">
+        数据库配置
+        <template #icon>
+          <i i-ri-database-2-line />
+        </template>
+      </NButton>
     </template>
   </FileManage>
   <!-- 选择数据表生成的面板 -->
@@ -283,5 +292,9 @@ onMounted(() => {
   <!-- 生成历史记录 -->
   <NDrawer v-model:show="historyVisible" width="90%" placement="right">
     <GenerateHistoryTable v-if="historyVisible" :project-id="props.projectId" :template-id="selectTemplateId" :title="projectInfo ? `项目【${projectInfo.name}】的生成记录` : ''" />
+  </NDrawer>
+  <!-- 数据库配置面板 -->
+  <NDrawer v-model:show="databaseVisible" width="90%" placement="right">
+    <UpdateDatabaseForm v-if="databaseVisible" :project-id="props.projectId" :template-id="selectTemplateId" :develop-id="selectDevelopId" :title="projectInfo ? `项目【${projectInfo.name}】的生成记录` : ''" />
   </NDrawer>
 </template>

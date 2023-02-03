@@ -83,18 +83,20 @@ const go = (projectId: string) => {
         修改人：{{ item.updateUserName }}
       </template>
       <template #action>
-        <NButton quaternary @click="go(item.id)">
-          查看
-        </NButton>
-        <NButton quaternary @click="handleClickUpdate(item.id)">
-          编辑
-        </NButton>
-        <NButton type="error" quaternary @click="handleClickDelete(item.id)">
-          删除
-        </NButton>
-        <NButton quaternary @click="handleClickGenerateHistory(item)">
-          生成记录
-        </NButton>
+        <n-space>
+          <NButton quaternary text tag="a" @click="go(item.id)">
+            查看
+          </NButton>
+          <NButton quaternary text tag="a" @click="handleClickUpdate(item.id)">
+            编辑
+          </NButton>
+          <NButton type="error" text quaternary tag="a" @click="handleClickDelete(item.id)">
+            删除
+          </NButton>
+          <NButton quaternary text tag="a" @click="handleClickGenerateHistory(item)">
+            生成记录
+          </NButton>
+        </n-space>
       </template>
     </NCard>
   </div>
