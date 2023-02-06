@@ -17,14 +17,28 @@ const props = withDefaults(defineProps<PropsState>(), {
 // 数据列表
 const dataList = ref<Array<ProjectGenerateHistoryVo>>([])
 
+const defaultRows = 15
+
 const page = ref<number>(1)
-const rows = ref<number>(16)
+const rows = ref<number>(defaultRows)
 const total = ref<number>(10)
+
+const pageSizes = computed<Array<number>>(() => {
+  return [
+    Math.ceil(defaultRows / 2),
+    defaultRows,
+    Math.ceil(defaultRows * 1.5),
+    Math.ceil(defaultRows * 2),
+    Math.ceil(defaultRows * 3),
+    Math.ceil(defaultRows * 5),
+    Math.ceil(defaultRows * 10),
+  ]
+})
 
 /**
  * 获取数据
  */
-const listData = (pageNum = 1, rowsSize = 16) => {
+const listData = (pageNum = 1, rowsSize = defaultRows) => {
   projectGenerateHistoryRequest.page({
     projectId: props.projectId,
     templateId: props.templateId,
