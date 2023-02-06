@@ -23,6 +23,7 @@ const page = ref<number>(1)
 const rows = ref<number>(defaultRows)
 const total = ref<number>(10)
 
+// 分页大小
 const pageSizes = computed<Array<number>>(() => {
   return [
     Math.ceil(defaultRows / 2),
@@ -87,7 +88,7 @@ onMounted(() => {
       <n-pagination
         v-model:page="page"
         v-model:page-size="rows"
-        :page-sizes="[5, 10, 20, 30, 50]"
+        :page-sizes="pageSizes"
         :item-count="total"
         size="medium"
         show-quick-jumper
