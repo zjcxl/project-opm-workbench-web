@@ -294,7 +294,9 @@ onMounted(() => {
     <GenerateHistoryTable v-if="historyVisible" :project-id="props.projectId" :template-id="selectTemplateId" :title="projectInfo ? `项目【${projectInfo.name}】的生成记录` : ''" />
   </NDrawer>
   <!-- 数据库配置面板 -->
-  <NDrawer v-model:show="databaseVisible" width="90%" placement="right">
-    <UpdateDatabaseForm v-if="databaseVisible" :project-id="props.projectId" :template-id="selectTemplateId" :develop-id="selectDevelopId" :title="projectInfo ? `项目【${projectInfo.name}】的生成记录` : ''" />
+  <NDrawer v-model:show="databaseVisible" width="30%" placement="right">
+    <NDrawerContent title="数据库配置">
+      <UpdateDatabaseForm v-if="databaseVisible" :project-id="props.projectId" :template-id="selectTemplateId" :develop-id="selectDevelopId" :title="projectInfo ? `项目【${projectInfo.name}】的生成记录` : ''" />
+    </NDrawerContent>
   </NDrawer>
 </template>
