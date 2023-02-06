@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<PropsState>(), {
 const dataList = ref<Array<ProjectGenerateHistoryVo>>([])
 
 const defaultRows = 15
+const maxRows = 100
 
 const page = ref<number>(1)
 const rows = ref<number>(defaultRows)
@@ -25,7 +26,7 @@ const total = ref<number>(10)
 
 // 分页大小
 const pageSizes = computed<Array<number>>(() => {
-  return [
+  return [...new Set([
     Math.ceil(defaultRows / 2),
     defaultRows,
     Math.ceil(defaultRows * 1.5),
@@ -33,7 +34,9 @@ const pageSizes = computed<Array<number>>(() => {
     Math.ceil(defaultRows * 3),
     Math.ceil(defaultRows * 5),
     Math.ceil(defaultRows * 10),
-  ]
+  ])]
+    .filter(item => item <= maxRows)
+    .sort((a, b) => a - b)
 })
 
 /**
