@@ -10,12 +10,13 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
   {
     title: '#',
     key: 'key',
-    width: 60,
+    width: 50,
     align: 'center',
     render: (_, index) => index + 1,
   },
   {
     type: 'expand',
+    width: 50,
     expandable: row => row.fileCount > 0,
     renderExpand: row => h(GenerateHistoryTableDetail, { historyId: row.id }),
   },
@@ -40,6 +41,7 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
   {
     title: '项目链',
     key: 'no',
+    width: 250,
     render: (row) => {
       return [row.project.name, row.template.name, row.develop.name].filter(item => item).join(' > ')
     },
@@ -47,6 +49,9 @@ export const columns: DataTableColumns<ProjectGenerateHistoryVo> = [
   {
     title: '标题',
     key: 'name',
+    ellipsis: {
+      tooltip: true,
+    },
   },
   {
     title: '生成时间',

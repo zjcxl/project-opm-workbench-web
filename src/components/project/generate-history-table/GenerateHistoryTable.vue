@@ -18,13 +18,13 @@ const props = withDefaults(defineProps<PropsState>(), {
 const dataList = ref<Array<ProjectGenerateHistoryVo>>([])
 
 const page = ref<number>(1)
-const rows = ref<number>(10)
+const rows = ref<number>(16)
 const total = ref<number>(10)
 
 /**
  * 获取数据
  */
-const listData = (pageNum = 1, rowsSize = 10) => {
+const listData = (pageNum = 1, rowsSize = 16) => {
   projectGenerateHistoryRequest.page({
     projectId: props.projectId,
     templateId: props.templateId,
