@@ -21,8 +21,6 @@ declare module '@vue/runtime-core' {
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
-    NCollapse: typeof import('naive-ui')['NCollapse']
-    NCollapseItem: typeof import('naive-ui')['NCollapseItem']
     NDataTable: typeof import('naive-ui')['NDataTable']
     NDivider: typeof import('naive-ui')['NDivider']
     NDrawer: typeof import('naive-ui')['NDrawer']
@@ -47,7 +45,6 @@ declare module '@vue/runtime-core' {
     TableSchemaExport: typeof import('./src/components/project/TableSchemaExport.vue')['default']
     TableSqlExport: typeof import('./src/components/project/TableSqlExport.vue')['default']
     UpdateDatabaseForm: typeof import('./src/components/project/database/UpdateDatabaseForm.vue')['default']
-    UpdateDatebaseForm: typeof import('./src/components/project/database/UpdateDatebaseForm.vue')['default']
     UpdateProject: typeof import('./src/components/project/UpdateProject.vue')['default']
   }
 }
