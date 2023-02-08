@@ -84,16 +84,16 @@ const go = (projectId: string) => {
       </template>
       <template #action>
         <n-space>
-          <NButton quaternary text tag="a" @click="go(item.id)">
+          <NButton text tag="a" @click="go(item.id)">
             查看
           </NButton>
-          <NButton quaternary text tag="a" @click="handleClickUpdate(item.id)">
+          <NButton text tag="a" @click="handleClickUpdate(item.id)">
             编辑
           </NButton>
-          <NButton type="error" text quaternary tag="a" @click="handleClickDelete(item.id)">
+          <NButton type="error" text tag="a" @click="handleClickDelete(item.id)">
             删除
           </NButton>
-          <NButton quaternary text tag="a" @click="handleClickGenerateHistory(item)">
+          <NButton text tag="a" @click="handleClickGenerateHistory(item)">
             生成记录
           </NButton>
         </n-space>

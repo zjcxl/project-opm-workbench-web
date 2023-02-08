@@ -35,6 +35,7 @@ const pageSizes = computed<Array<number>>(() => {
     Math.ceil(defaultRows * 5),
     Math.ceil(defaultRows * 10),
   ])]
+    .filter(item => item > 0)
     .filter(item => item <= maxRows)
     .sort((a, b) => a - b)
 })
