@@ -8,6 +8,12 @@ import { handleRsa } from '~/util/once/rsa-util'
 
 export const requestConfig: RequestConfig = {
   header: () => ({
+    'submit-key': ({ data }) => {
+      // 如果请求参数中有需要submit-key的参数，设置缓存
+      if (data['submit-key'])
+        return NANOID(16)
+      return ''
+    },
     'opm-token': () => getToken(),
   }),
   // 异常处理的设置

@@ -11,10 +11,10 @@
     "up": "taze major -I"
   },
   "dependencies": {
-    "@dc-basic-component/config": "^1.1.30",
-    "@dc-basic-component/request": "^1.1.30",
-    "@dc-basic-component/request-axios": "^1.1.30",
-    "@dc-basic-component/util": "^1.1.30",
+    "@dc-basic-component/config": "^1.1.33",
+    "@dc-basic-component/request": "^1.1.33",
+    "@dc-basic-component/request-axios": "^1.1.33",
+    "@dc-basic-component/util": "^1.1.33",
     "@vueuse/core": "^9.12.0",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
