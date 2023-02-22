@@ -5,6 +5,7 @@ specifiers:
   '@dc-basic-component/config': ^1.1.33
   '@dc-basic-component/request': ^1.1.33
   '@dc-basic-component/request-axios': ^1.1.33
+  '@dc-basic-component/ui-naive': ^1.1.35
   '@dc-basic-component/util': ^1.1.33
   '@iconify-json/carbon': ^1.1.14
   '@iconify-json/ri': ^1.1.4
@@ -41,6 +42,7 @@ dependencies:
   '@dc-basic-component/config': 1.1.33
   '@dc-basic-component/request': 1.1.33_bkq6ee7ffnbf7ths5vinbq3lsu
   '@dc-basic-component/request-axios': 1.1.33_u6kfyd4vtsvthkmyctssiryzje
+  '@dc-basic-component/ui-naive': 1.1.35
   '@dc-basic-component/util': 1.1.33_ooxy4mcefwexe452i5ekvcwxxe
   '@vueuse/core': 9.12.0_vue@3.2.47
   vue: 3.2.47
@@ -551,6 +553,17 @@ packages:
       '@dc-basic-component/util': 1.1.33_ooxy4mcefwexe452i5ekvcwxxe
       vite: 4.1.1_edl3ajnhen4c5iqs57t4gqrzly
       vue: 3.2.47
+    dev: false
+
+  /@dc-basic-component/ui-naive/1.1.35:
+    resolution: {integrity: sha512-T4x6w0f316lwgvLgIO8rZVkrdxeg9+xD92p0XFLpJyqYKzKbXJP8qX/09WD4DlT+D5Hafi//Quv4pXM4PZfFiA==}
+    dependencies:
+      '@dc-basic-component/config': 1.1.33
+      '@dc-basic-component/util': 1.1.33_ooxy4mcefwexe452i5ekvcwxxe
+      '@vueuse/core': 9.12.0_vue@3.2.47
+      vue: 3.2.47
+    transitivePeerDependencies:
+      - '@vue/composition-api'
     dev: false
 
   /@dc-basic-component/util/1.1.33_ooxy4mcefwexe452i5ekvcwxxe:
