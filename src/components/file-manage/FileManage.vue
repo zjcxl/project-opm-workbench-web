@@ -82,7 +82,7 @@ const handleClickFile = (fileId: string, option: TreeOption) => {
  * @param keys 选中的keys
  * @param options 选中的节点s
  */
-const handleClick = (keys: string[], options: TreeOption[]) => {
+const handleClick = (keys: string[], options: Array<TreeOption | null>) => {
   // 获取第一层元素信息
   const option = options[0]
   // 如果存在子级（说明是文件夹，处理点击文件事件）
@@ -121,15 +121,15 @@ const init = (array: TreeOption[]) => {
   dataList.value = sortTreeOption(array)
   // 初始化文件管理对象
   fileManage.value = new FileManage(
-    monacoEditorRef.value.getValue,
-    monacoEditorRef.value.setValue,
+    monacoEditorRef.value?.getValue || (() => ''),
+    monacoEditorRef.value?.setValue || (() => {}),
     props.getContentMethod,
   )
   // 打开第一份文件
   const option = getFirstOption(dataList.value)
   if (!option) {
     showPanel.value = 'file'
-    monacoEditorRef.value.setValue('')
+    monacoEditorRef.value?.setValue('')
     return
   }
   const key = option.key as any as string

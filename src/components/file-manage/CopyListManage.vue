@@ -17,7 +17,7 @@ const variableList = ref<Array<VariableModel>>([])
 // 变量加载提示
 const variableLoading = ref<boolean>(false)
 
-const colorRecord = {
+const colorRecord: Record<string, 'default' | 'error' | 'primary' | 'info' | 'success' | 'warning'> = {
   value: 'success',
   list: 'warning',
 }
