@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue'
+import { defineProps } from 'vue'
+import { BaseTableHelper } from '@dc-basic-component/ui-naive'
 import { columns } from './columns'
 import projectGenerateHistoryRequest from '~/api/project-generate-history'
-import type { ProjectGenerateHistoryVo } from '~/entity/project/project-generate-history-vo'
 
 interface PropsState {
   projectId?: string
@@ -13,94 +13,19 @@ interface PropsState {
 const props = withDefaults(defineProps<PropsState>(), {
   title: '生成历史',
 })
-
-// 数据列表
-const dataList = ref<Array<ProjectGenerateHistoryVo>>([])
-
-const defaultRows = 15
-const maxRows = 100
-
-const page = ref<number>(1)
-const rows = ref<number>(defaultRows)
-const total = ref<number>(10)
-
-// 分页大小
-const pageSizes = computed<Array<number>>(() => {
-  return [...new Set([
-    Math.ceil(defaultRows / 2),
-    defaultRows,
-    Math.ceil(defaultRows * 1.5),
-    Math.ceil(defaultRows * 2),
-    Math.ceil(defaultRows * 3),
-    Math.ceil(defaultRows * 5),
-    Math.ceil(defaultRows * 10),
-  ])]
-    .filter(item => item > 0)
-    .filter(item => item <= maxRows)
-    .sort((a, b) => a - b)
-})
-
-/**
- * 获取数据
- */
-const listData = (pageNum = 1, rowsSize = defaultRows) => {
-  projectGenerateHistoryRequest.page({
-    projectId: props.projectId,
-    templateId: props.templateId,
-    rows: rowsSize,
-    page: pageNum,
-  }).then((data) => {
-    dataList.value = data.data.list
-    page.value = data.data.page
-    rows.value = data.data.rows
-    total.value = data.data.total
-  })
-}
-
-/**
- * 修改页数的方法
- * @param page
- */
-const handleChangePage = (page: number) => {
-  listData(page, rows.value)
-}
-
-/**
- * 修改分页大小的方法
- * @param rows
- */
-const handleChangePageSize = (rows: number) => {
-  listData(1, rows)
-}
-
-onMounted(() => {
-  listData()
-})
 </script>
 
 <template>
   <NDrawerContent v-once :title="props.title">
-    <n-data-table
+    <BaseTableHelper
       :columns="columns"
-      :data="dataList"
+      :fetch-method="projectGenerateHistoryRequest.page"
+      :default-params="{ projectId: props.projectId, templateId: props.templateId }"
       :row-key="row => row.id"
       :pagination="false"
       :bordered="false"
+      :default-rows="13"
     />
-    <br>
-    <n-space justify="end">
-      <n-pagination
-        v-model:page="page"
-        v-model:page-size="rows"
-        :page-sizes="pageSizes"
-        :item-count="total"
-        size="medium"
-        show-quick-jumper
-        show-size-picker
-        @update:page="handleChangePage"
-        @update:page-size="handleChangePageSize"
-      />
-    </n-space>
   </NDrawerContent>
 </template>
 
