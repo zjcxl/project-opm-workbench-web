@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { BaseTableListHelper } from '@dc-basic-component/ui-naive'
 import projectRequest from '~/api/project'
 import type { ProjectVo } from '~/entity/project/project-vo'
 
@@ -72,33 +73,41 @@ const go = (projectId: string) => {
     项目列表
   </NDivider>
   <div class="project-container">
-    <NCard v-for="item in projectArray" :key="item.id" :title="item.name">
-      <template #header-extra>
-        #header-extra
+    <BaseTableListHelper
+      :fetch-method="projectRequest.page"
+      :row-key="row => row.id"
+      :default-rows="10"
+    >
+      <template>
+        <NCard v-for="item in projectArray" :key="item.id" :title="item.name">
+          <template #header-extra>
+            #header-extra
+          </template>
+          {{ item.description }}
+          <template #footer>
+            修改时间：{{ item.gmtModified }}
+            <br>
+            修改人：{{ item.updateUserName }}
+          </template>
+          <template #action>
+            <n-space>
+              <NButton text tag="a" @click="go(item.id)">
+                查看
+              </NButton>
+              <NButton text tag="a" @click="handleClickUpdate(item.id)">
+                编辑
+              </NButton>
+              <NButton type="error" text tag="a" @click="handleClickDelete(item.id)">
+                删除
+              </NButton>
+              <NButton text tag="a" @click="handleClickGenerateHistory(item)">
+                生成记录
+              </NButton>
+            </n-space>
+          </template>
+        </NCard>
       </template>
-      {{ item.description }}
-      <template #footer>
-        修改时间：{{ item.gmtModified }}
-        <br>
-        修改人：{{ item.updateUserName }}
-      </template>
-      <template #action>
-        <n-space>
-          <NButton text tag="a" @click="go(item.id)">
-            查看
-          </NButton>
-          <NButton text tag="a" @click="handleClickUpdate(item.id)">
-            编辑
-          </NButton>
-          <NButton type="error" text tag="a" @click="handleClickDelete(item.id)">
-            删除
-          </NButton>
-          <NButton text tag="a" @click="handleClickGenerateHistory(item)">
-            生成记录
-          </NButton>
-        </n-space>
-      </template>
-    </NCard>
+    </BaseTableListHelper>
   </div>
   <!-- 新增修改页面 -->
   <NDrawer v-model:show="updatePanel.visible" width="40%" placement="right">
@@ -113,9 +122,9 @@ const go = (projectId: string) => {
 </template>
 
 <style scoped lang="less">
-.project-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 16px;
-}
+//.project-container {
+//  display: grid;
+//  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+//  grid-gap: 16px;
+//}
 </style>
